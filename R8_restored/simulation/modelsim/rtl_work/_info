@@ -1,0 +1,374 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/simulation/modelsim
+Econtrol_unit
+Z1 w1728303594
+Z2 DPx4 work 2 r8 0 22 IBHhi4KkeC803FoQJdUUe0
+Z3 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+Z4 DPx4 ieee 18 std_logic_unsigned 0 22 ;eZjO2D4ZDz<]0>8AL<ne1
+Z5 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z6 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 1
+R0
+Z7 8C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd
+Z8 FC:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd
+l0
+L303 1
+VZL;:kNUX7L26JUaa2G>3O0
+!s100 hB<Hz:EJMmPUzSE2fIEWb2
+Z9 OV;C;2020.1;71
+31
+Z10 !s110 1728405099
+!i10b 1
+Z11 !s108 1728405098.000000
+Z12 !s90 -reportprogress|300|-93|-work|work|C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd|
+Z13 !s107 C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd|
+!i113 1
+Z14 o-93 -work work
+Z15 tExplicit 1 CvgOpt 0
+Acontrol_unit
+R2
+R3
+R4
+R5
+R6
+DEx4 work 12 control_unit 0 22 ZL;:kNUX7L26JUaa2G>3O0
+!i122 1
+l319
+L310 183
+VW3^MLKhZ^YXhNBg5AaBLk1
+!s100 ^@L80goegk4lEkT?S4JAT3
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Edatapath
+R1
+R2
+R3
+R4
+R5
+R6
+!i122 1
+R0
+R7
+R8
+l0
+L170 1
+VEOMRlDEVMlXS4@Jh8EY[k3
+!s100 Y`1ShPY<b@a@dZW;6;hHg3
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Adatapath
+R2
+R3
+R4
+R5
+R6
+DEx4 work 8 datapath 0 22 EOMRlDEVMlXS4@Jh8EY[k3
+!i122 1
+l190
+L179 114
+V71WeH`N:]Rn6^IcK_YTmi0
+!s100 z9V_MI;0:OJG`z=c?i78R3
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Ememram
+Z16 w1728304389
+R2
+R3
+R5
+R6
+R4
+!i122 2
+R0
+Z17 8C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8_tb.vhd
+Z18 FC:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8_tb.vhd
+l0
+L22 1
+V[DnK<Id<C02`hFGcFa:=i1
+!s100 [E[^T8_mB=BzC4Z^9Vl^h2
+R9
+31
+R10
+!i10b 1
+Z19 !s108 1728405099.000000
+Z20 !s90 -reportprogress|300|-93|-work|work|C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8_tb.vhd|
+!s107 C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8_tb.vhd|
+!i113 1
+R14
+R15
+Aa1
+R2
+R3
+R5
+R6
+R4
+DEx4 work 6 memram 0 22 [DnK<Id<C02`hFGcFa:=i1
+!i122 2
+l33
+L28 20
+VP_2ei:[YPK>>[jZRN<h5d1
+!s100 o96n`^k[zbKFnO]j3bQ5a3
+R9
+31
+R10
+!i10b 1
+R19
+R20
+Z21 !s107 C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8_tb.vhd|
+!i113 1
+R14
+R15
+Eprocessor
+R1
+R2
+R5
+R6
+!i122 1
+R0
+R7
+R8
+l0
+L501 1
+VT]_H39DE:C@8K^NHo=c560
+!s100 N:@8<db9QdLcW31cKM=ol0
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Aprocessor
+R2
+R5
+R6
+DEx4 work 9 processor 0 22 T]_H39DE:C@8K^NHo=c560
+!i122 1
+l531
+L509 33
+V]cSE6AI:c]Y_7zk<VE[zT3
+!s100 >Cmfz9CEz1f55RaShn8A?1
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Pr8
+R5
+R6
+!i122 1
+R1
+R0
+R7
+R8
+l0
+L32 1
+VIBHhi4KkeC803FoQJdUUe0
+!s100 zK2QUTl>0hWb1XjN:_a?a2
+R9
+31
+b1
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Bbody
+R2
+R5
+R6
+!i122 1
+l0
+L77 1
+VN29n=Re=Dzjn>nG[S4Q[A2
+!s100 jI3PZa25fW5YfOhSb_UAe1
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Er8_tb
+R16
+R2
+R4
+R3
+R5
+R6
+!i122 2
+R0
+R17
+R18
+l0
+L59 1
+V_BFL_n^`?3KN_=IPK>:Ul2
+!s100 S83maN>k8HA2@VCVA6EJ>1
+R9
+31
+R10
+!i10b 1
+R19
+R20
+R21
+!i113 1
+R14
+R15
+Atb_architecture
+R2
+R4
+R3
+R5
+R6
+DEx4 work 5 r8_tb 0 22 _BFL_n^`?3KN_=IPK>:Ul2
+!i122 2
+l84
+L62 114
+VHJ4lAkHDazNS4;V[^7l;Y2
+!s100 BFP<PNP?Jb9T=P3:GIGAj3
+R9
+31
+R10
+!i10b 1
+R19
+R20
+R21
+!i113 1
+R14
+R15
+Ereg_bank
+R1
+R2
+R3
+R4
+R5
+R6
+!i122 1
+R0
+R7
+R8
+l0
+L133 1
+VB_L:@iEckY5MkBSXoI`e42
+!s100 dMmVJ?Fg9ljoHXHdHgg612
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Areg_bank
+R2
+R3
+R4
+R5
+R6
+DEx4 work 8 reg_bank 0 22 B_L:@iEckY5MkBSXoI`e42
+!i122 1
+l144
+L139 20
+VW]dK0>f8a8zkZkK9<:[Gj0
+!s100 m?o8V]=<bfJmakDU@k1nl1
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Eregister16
+R1
+R2
+R5
+R6
+!i122 1
+R0
+R7
+R8
+l0
+L107 1
+V6QEUkFf7Ql]l`57U4TfEb0
+!s100 Nb@^zC?D]P<^B<BoU0WlC0
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Aregister16
+R2
+R5
+R6
+DEx4 work 10 register16 0 22 6QEUkFf7Ql]l`57U4TfEb0
+!i122 1
+l114
+L113 11
+V:n>mVOBo>Q21n;eMm>F=b1
+!s100 7mleO2@Qae`2]Z`Rk[MPk1
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
