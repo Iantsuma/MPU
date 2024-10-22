@@ -1,5 +1,5 @@
 Restore Archived Project report for R8
-Tue Oct 22 13:12:32 2024
+Tue Oct 22 15:44:31 2024
 Quartus Prime Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
 
 
@@ -37,7 +37,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------+
 ; Restore Archived Project Summary                                        ;
 +---------------------------------+---------------------------------------+
-; Restore Archived Project Status ; Successful - Tue Oct 22 13:12:32 2024 ;
+; Restore Archived Project Status ; Successful - Tue Oct 22 15:44:31 2024 ;
 ; Revision Name                   ; R8                                    ;
 ; Top-level Entity Name           ; processor                             ;
 ; Family                          ; Cyclone IV E                          ;
@@ -47,13 +47,13 @@ https://fpgasoftware.intel.com/eula.
 +-----------------------------------+
 ; Restore Archived Project Messages ;
 +-----------------------------------+
-Info: Successfully restored 'C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/MPU/R8.qar' into the 'C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/MPU/R8_restored/' directory
+Info: Successfully restored 'D:/ARQUITORTURA/MPU/R8.qar' into the 'D:/ARQUITORTURA/MPU/R8_restored/' directory
 Info: Generated report 'R8.restore.rpt'
-Info (23030): Evaluation of Tcl script c:/intelfpga_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
-Info: Quartus Prime Shell was successful. 0 errors, 10 warnings
-    Info: Peak virtual memory: 4821 megabytes
-    Info: Processing ended: Tue Oct 22 13:12:32 2024
-    Info: Elapsed time: 00:00:03
+Info (23030): Evaluation of Tcl script d:/arquitortura/intelfpga_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 8 warnings
+    Info: Peak virtual memory: 4816 megabytes
+    Info: Processing ended: Tue Oct 22 15:44:31 2024
+    Info: Elapsed time: 00:00:04
     Info: Total CPU time (on all processors): 00:00:01
 
 
@@ -61,6 +61,9 @@ Info: Quartus Prime Shell was successful. 0 errors, 10 warnings
 ; Files Restored ;
 +----------------+
 ; File Name      ;
++----------------+
+; R8.vhd         ;
+; R8_tb.vhd      ;
 +----------------+
 
 
@@ -72,9 +75,7 @@ Info: Quartus Prime Shell was successful. 0 errors, 10 warnings
 ; qar_info.json           ;
 ; R8.qpf                  ;
 ; R8.qsf                  ;
-; R8.vhd                  ;
 ; R8_arq_spec_port.pdf    ;
-; R8_tb.vhd               ;
 ; vectaddR8.asm           ;
 ; vectaddR8.txt           ;
 ; assignment_defaults.qdf ;

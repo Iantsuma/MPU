@@ -11,6 +11,7 @@ architecture behavior of MPU_tb is
         port(
             ce_n, we_n, oe_n: in std_logic;
             intr: out std_logic;
+            clk:  in  std_logic;
             address: in std_logic_vector(15 downto 0);
             data: inout std_logic_vector(15 downto 0)
         );
@@ -19,6 +20,7 @@ architecture behavior of MPU_tb is
     -- Signals to connect to the UUT
     signal ce_n, we_n, oe_n: std_logic := '1';
     signal intr: std_logic;
+    signal clk: std_logic;
     signal address: std_logic_vector(15 downto 0) := (others => '0');
     signal data: std_logic_vector(15 downto 0);
 
@@ -35,11 +37,18 @@ begin
             we_n => we_n,
             oe_n => oe_n,  --Output enable, ligado quando usando o data como saída, else Z
             intr => intr,
+            clk  => clk,
             address => address,
             data => data
         );
 
     -- Test process
+    clk_process: process
+    begin
+        clk <= not(clk);
+        wait for 1 ns;
+    end process;
+
     stimulus_process: process
     begin
         -- Initialize signals
@@ -49,6 +58,7 @@ begin
         
         -- Test 1: Matriz A e B com valores conhecidos
         -- Definir valores para A e B (exemplo simples, você pode modificar)
+        wait for 2 ns;
         A(239 downto 224) <= "0000000000000001";
         A(255 downto 240) <= "0000000000000001";
         A(223 downto 208) <= "0000000000000001";
@@ -65,6 +75,7 @@ begin
         A(47  downto 32)  <= "0000000000000001";
         A(31  downto 16)  <= "0000000000000001";
         A(15  downto 0)   <= "0000000000000001";
+        wait for 2 ns;
 
         B(255 downto 240) <= "0000000000000001";
         B(239 downto 224) <= "0000000000000001";
@@ -82,9 +93,10 @@ begin
         B(47  downto 32)  <= "0000000000000001";
         B(31  downto 16)  <= "0000000000000001";
         B(15  downto 0)   <= "0000000000000001";
+        wait for 2 ns;
 
         -- Inicializar o sinal data
-
+        data(15 downto 0) <= "0000000000000000";
         wait for 10 ns;
 
         data(15 downto 0) <= "0000000000000001";
