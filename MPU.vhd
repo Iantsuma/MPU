@@ -9,8 +9,9 @@ entity MPU is
         ce_n, we_n, oe_n: in std_logic;
         intr: out std_logic;
         clk:    in std_logic;
-        address: in reg16;
-        data: inout reg16
+        rst:    in std_logic;
+        address: in std_logic_vector(15 downto 0);
+        data: inout std_logic_vector(15 downto 0)
     );
 end entity MPU;
 
@@ -18,6 +19,7 @@ architecture reg of MPU is
     signal A 	: std_logic_vector(255 downto 0);
     signal B 	: std_logic_vector(255 downto 0);
     signal C 	: std_logic_vector(255 downto 0);
+    signal com  : std_logic_vector(15 downto 0);
 	 signal regA : std_logic_vector(15 downto 0);
 	 signal regB : std_logic_vector(15 downto 0);
 	 signal regC : std_logic_vector(31 downto 0);
@@ -26,18 +28,37 @@ architecture reg of MPU is
 
 begin
     data <= (others => 'Z');
- 
+    -- LINHA ABAIXO FEITa APENAS PARA TESTE
+        com <= "0000000000000000";
+    --LINHAS ACIMA FEITAS APENAS PARA TESTE SEM O r8
 	    -- Processamento da ULA baseado no opcode
-    process(A, B, clk, data)
+    process(A, B, clk, rst, data)
     begin
-        if address < 0000000000010000 then
-            case address is
-                when "0000000000000000"=>
-                    if rising_edge(clk)
+        if (address = "0000000000000000") then
+            if rising_edge(clk) then 
+                case com(to_integer(unsigned(address))) is
+                    when '0'=>
                         A(255 downto 240) <= data;
-                    end if;
+                        A(239 downto 224) <= data;
+                        A(223 downto 208) <= data;
+                        A(207 downto 192) <= data;
+                        A(191 downto 176) <= data;
+                        A(175 downto 160) <= data;
+                        A(159 downto 144) <= data;
+                        A(143 downto 128) <= data;
+                        A(127 downto 112) <= data;
+                        A(111 downto 96)  <= data;
+                        A(95  downto 80)  <= data;
+                        A(79  downto 64)  <= data;
+                        A(63  downto 48)  <= data;
+                        A(47  downto 32)  <= data;
+                        A(31  downto 16)  <= data;
+                        A(15  downto 0)   <= data;
+                    when others =>
 
-            end case;
+                        
+                end case;
+            end if;
         end if;
         case data is
             when "0000000000000000" =>
