@@ -306,6 +306,49 @@ architecture reg of MPU is
 
     end ID;
 
+    procedure READ (
+                    signal addr :   in std_logic_vector(4 downto 0);
+                    signal data :   in std_logic_vector(15 downto 0);
+                    signal MAT 	:   in  std_logic_vector(255 downto 0)
+                    ) is
+        begin
+            case addr is
+                when    "00000"=>
+                    data <= MAT(255 downto 240);
+                when    "00001"=>
+                    data <= MAT(239 downto 224);
+                when    "00010"=>
+                    data <= MAT(223 downto 208);
+                when    "00011"=>
+                    data <= MAT(207 downto 192);
+                when    "00100"=>
+                    data <= MAT(191 downto 176);
+                when    "00101"=>
+                    data <= MAT(175 downto 160);
+                when    "00110"=>
+                    data <= MAT(159 downto 144);
+                when    "00111"=>
+                    data <= MAT(143 downto 128);
+                when    "01000"=>
+                    data <= MAT(127 downto 112);
+                when    "010001"=>
+                    data <= MAT(111 downto 96);
+                when    "01010"=>
+                    data <= MAT(95  downto 80);
+                when    "01011"=>
+                    data <= MAT(79  downto 64);
+                when    "01100"=>
+                    data <= MAT(63  downto 48);
+                when    "011001"=>
+                    data <= MAT(47  downto 32);
+                when    "01110"=>
+                    data <= MAT(31  downto 16);
+                when    "01111"=>
+                    data <= MAT(15  downto 0);
+                when others =>
+            end case;
+
+    end READ;
 begin
     data <= (others => 'Z');
     -- LINHA ABAIXO FEITa APENAS PARA TESTE
@@ -316,6 +359,14 @@ begin
     begin
         if rising_edge(clk) then
             case com(15 downto 0) is  --Se com na posição address for igual a:
+                when "1111111111111111"=>                              --fill A com data
+                    com(15 downto 0)<=data;
+                when "1000000000000000"=>
+                    data<=
+                when "0100000000000000"=>
+                    --Passa pra data
+                when "0010000000000000"=>
+                    --Passa pra data
                 when "0000000000000000"=>                              --fill A com data
                     FILL(A, data);
                 when "0000000000000001"=>                              --fill B com data
@@ -337,7 +388,7 @@ begin
                     ID(B, data);
                 when "0000000000001010"=>
                     ID(C, data);
-                    
+                
                     
                     
 

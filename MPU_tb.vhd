@@ -52,9 +52,8 @@ begin
     end process;
 
     stimulus_process: process
-    begin
-        address <= "0000000000000000";
-        data   <= "0000000000000001";
-        wait for 10 ns;
+        begin
+
+
     end process;
 end architecture behavior;
