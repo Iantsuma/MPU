@@ -14,96 +14,66 @@ entity MPU is
     );
 end entity MPU;
 
-architecture reg of MPU is
-    signal A 	: std_logic_vector(255 downto 0);
-    signal B 	: std_logic_vector(255 downto 0);
-    signal C 	: std_logic_vector(255 downto 0);
-	 signal regA : std_logic_vector(15 downto 0);
-	 signal regB : std_logic_vector(15 downto 0);
-	 signal regC : std_logic_vector(31 downto 0);
-    signal temp_sum : std_logic_vector(31 downto 0);
-     
+architecture operations of MPU is
+    
+	type matriz is array (0 to 3, 0 to 3) of std_logic_vector(15 downto 0); --Definição do tipo MATRIZ 4x4
+																									 --Cada celula é um vetor de 16bits
+	type matriz_bank is array (0 to 2) of matriz; --Registrador de 3 bit para cada uma das matrizes A,B,C
+	
+	signal registrador_comandos: std_logic_vector(255 downto 0) := (others => '0'); 
+	
+	signal aux_matriz : matriz;
+	
+	signal reg : matriz_bank := (others =>(others =>(others =>(others => '0')))); 
+	 
+	signal data_out : reg16;
+	 
+	
+	procedure soma (MatrizA, MatrizB : in matriz; MatrizC : out matriz) is
+	begin
+		for i in 0 to 3 loop
+			for j in 0 to 3 loop
+				MatrizC(i, j) <= std_logic_vector(signed(MatrizA(i, j)) + signed(MatrizB(i, j)));
+			end loop;
+		end loop;
+	end procedure;
+	
+	
+	procedure sub (MatrizA, MatrizB : in matriz; MatrizC : out matriz) is
+	begin
+		for i in 0 to 3 loop
+			for j in 0 to 3 loop
+				MatrizC(i, j) <= std_logic_vector(signed(MatrizA(i, j)) - signed(MatrizB(i, j)));
+			end loop;
+		end loop;
+	end procedure;
+	
+	procedure multiplica (MatrizA, MatrizB : in matriz; MatrizC : out matriz) is
+	begin
+		 for i in 0 to 3 loop
+			  for j in 0 to 3 loop
+					-- Inicializa o elemento MatrizC(i,j) com zero
+					MatrizC(i, j) <= (others => '0');
+					for k in 0 to 3 loop
+						 -- Acumula o produto da linha de A com a coluna de B
+						 MatrizC(i, j) <= std_logic_vector(signed(MatrizC(i, j)) + signed(MatrizA(i, k)) * signed(MatrizB(k, j)));
+					end loop;
+			  end loop;
+		 end loop;
+	end procedure;
+	
+	procedure fill (Matriz: out matriz; valor: in reg16) is
+	begin
+		 for i in 0 to 3 loop
+			  for j in 0 to 3 loop
+					-- Preenche cada elemento da matriz com o valor fornecido
+					Matriz(i, j) <= valor;
+			  end loop;
+		 end loop;
+	end procedure;
+	
+	
+begin 
 
-begin
-    data <= (others => 'Z');
- 
-	    -- Processamento da ULA baseado no opcode
-    process(A, B, clk, data)
-    begin
-        if address < 0000000000010000 then
-            case address is
-                when "0000000000000000"=>
-                    if rising_edge(clk)
-                        A(255 downto 240) <= data;
-                    end if;
-
-            end case;
-        end if;
-        case data is
-            when "0000000000000000" =>
-                if rising_edge(clk) then -- Operação de Soma
-                    C(255 downto 240) <= std_logic_vector(unsigned(A(255 downto 240)) + unsigned(B(255 downto 240)));
-                    C(239 downto 224) <= std_logic_vector(unsigned(A(239 downto 224)) + unsigned(B(239 downto 224)));
-                    C(223 downto 208) <= std_logic_vector(unsigned(A(223 downto 208)) + unsigned(B(223 downto 208)));
-                    C(207 downto 192) <= std_logic_vector(unsigned(A(207 downto 192)) + unsigned(B(207 downto 192)));
-                    C(191 downto 176) <= std_logic_vector(unsigned(A(191 downto 176)) + unsigned(B(191 downto 176)));
-                    C(175 downto 160) <= std_logic_vector(unsigned(A(175 downto 160)) + unsigned(B(175 downto 160)));
-                    C(159 downto 144) <= std_logic_vector(unsigned(A(159 downto 144)) + unsigned(B(159 downto 144)));
-                    C(143 downto 128) <= std_logic_vector(unsigned(A(143 downto 128)) + unsigned(B(143 downto 128)));
-                    C(127 downto 112) <= std_logic_vector(unsigned(A(127 downto 112)) + unsigned(B(127 downto 112)));
-                    C(111 downto 96)  <= std_logic_vector(unsigned(A(111 downto 96)) + unsigned(B(111 downto 96)));
-                    C(95  downto 80)  <= std_logic_vector(unsigned(A(95  downto 80)) + unsigned(B(95  downto 80)));
-                    C(79  downto 64)  <= std_logic_vector(unsigned(A(79  downto 64)) + unsigned(B(79  downto 64)));
-                    C(63  downto 48)  <= std_logic_vector(unsigned(A(63  downto 48)) + unsigned(B(63  downto 48)));
-                    C(47  downto 32)  <= std_logic_vector(unsigned(A(47  downto 32)) + unsigned(B(47  downto 32)));
-                    C(31  downto 16)  <= std_logic_vector(unsigned(A(31  downto 16)) + unsigned(B(31  downto 16)));
-                    C(15  downto 0)   <= std_logic_vector(unsigned(A(15  downto 0)) + unsigned(B(15  downto 0)));
-                end if;
-            when "0000000000000001" =>
-                if rising_edge(clk) then
-                    C(255 downto 240) <= std_logic_vector(unsigned(A(255 downto 240)) - unsigned(B(255 downto 240)));
-                    C(239 downto 224) <= std_logic_vector(unsigned(A(239 downto 224)) - unsigned(B(239 downto 224)));
-                    C(223 downto 208) <= std_logic_vector(unsigned(A(223 downto 208)) - unsigned(B(223 downto 208)));
-                    C(207 downto 192) <= std_logic_vector(unsigned(A(207 downto 192)) - unsigned(B(207 downto 192)));
-                    C(191 downto 176) <= std_logic_vector(unsigned(A(191 downto 176)) - unsigned(B(191 downto 176)));
-                    C(175 downto 160) <= std_logic_vector(unsigned(A(175 downto 160)) - unsigned(B(175 downto 160)));
-                    C(159 downto 144) <= std_logic_vector(unsigned(A(159 downto 144)) - unsigned(B(159 downto 144)));
-                    C(143 downto 128) <= std_logic_vector(unsigned(A(143 downto 128)) - unsigned(B(143 downto 128)));
-                    C(127 downto 112) <= std_logic_vector(unsigned(A(127 downto 112)) - unsigned(B(127 downto 112)));
-                    C(111 downto 96)  <= std_logic_vector(unsigned(A(111 downto 96)) - unsigned(B(111 downto 96)));
-                    C(95  downto 80)  <= std_logic_vector(unsigned(A(95  downto 80)) - unsigned(B(95  downto 80)));
-                    C(79  downto 64)  <= std_logic_vector(unsigned(A(79  downto 64)) - unsigned(B(79  downto 64)));
-                    C(63  downto 48)  <= std_logic_vector(unsigned(A(63  downto 48)) - unsigned(B(63  downto 48)));
-                    C(47  downto 32)  <= std_logic_vector(unsigned(A(47  downto 32)) - unsigned(B(47  downto 32)));
-                    C(31  downto 16)  <= std_logic_vector(unsigned(A(31  downto 16)) - unsigned(B(31  downto 16)));
-                    C(15  downto 0)   <= std_logic_vector(unsigned(A(15  downto 0)) - unsigned(B(15  downto 0)));
-                end if;
-            -- Adicione outras operações da ULA aqui (subtração, AND, OR, etc.)
-            when "0000000000000010"=>
-                    if rising_edge(clk) then
-                        for i in 0 to 3 loop
-                            for j in 0 to 3 loop
-                                temp_sum <= (others => '0'); -- Inicializa o somador
-
-                                for k in 0 to 3 loop
-                                    -- Pegando os elementos 16 bits de A e B para multiplicação
-                                    regA <= A(16*(i*4+k) + 15 downto 16*(i*4+k));
-                                    regB <= B(16*(k*4+j) + 15 downto 16*(k*4+j));
-
-                                    -- Multiplicação e acumulação dos resultados
-                                    temp_sum <= temp_sum + std_logic_vector(signed(regA) * signed(regB));
-                                end loop;
-
-                                -- Guardar o resultado 16 bits em C (note que tomamos os 16 bits menos significativos)
-                                C(16*(i*4+j) + 15 downto 16*(i*4+j)) <= temp_sum(15 downto 0); 
-                            end loop;
-                        end loop;
-                    end if;
-
-            when others => 
-                C <= (others => '0');  -- Valor padrão se o opcode não for reconhecido
-        end case;
-    end process;
-
-end architecture reg;
+end architecture operations;
 	
