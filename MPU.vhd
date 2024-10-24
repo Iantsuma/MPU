@@ -32,7 +32,7 @@ architecture reg of MPU is
                     signal MAT1 	:   in  std_logic_vector(255 downto 0);
                     signal MAT2 	:   in  std_logic_vector(255 downto 0);
                     signal MATR 	:   out std_logic_vector(255 downto 0)
-                    )
+                    ) is
         begin
             MATR(255 downto 240) <= std_logic_vector(signed(MAT1(255 downto 240)) + signed(MAT2(255 downto 240)));
             MATR(239 downto 224) <= std_logic_vector(signed(MAT1(239 downto 224)) + signed(MAT2(239 downto 224)));
@@ -56,7 +56,7 @@ architecture reg of MPU is
                 signal MAT1 	:   in  std_logic_vector(255 downto 0);
                 signal MAT2 	:   in  std_logic_vector(255 downto 0);
                 signal MATR 	:   out std_logic_vector(255 downto 0)
-                )
+                ) is
         begin
             MATR(255 downto 240) <= std_logic_vector(signed(MAT1(255 downto 240)) - signed(MAT2(255 downto 240)));
             MATR(239 downto 224) <= std_logic_vector(signed(MAT1(239 downto 224)) - signed(MAT2(239 downto 224)));
@@ -79,7 +79,7 @@ architecture reg of MPU is
     procedure FILL  (
                     signal MAT 	:   out  std_logic_vector(255 downto 0);
                     signal data :   in std_logic_vector(15 downto 0)
-                    )
+                    ) is
         begin
             MAT(255 downto 240) <= data;
             MAT(239 downto 224) <= data;
@@ -103,25 +103,25 @@ architecture reg of MPU is
                         signal A 	:   in  std_logic_vector(255 downto 0);
                         signal B 	:   in  std_logic_vector(255 downto 0);
                         signal C 	:   out std_logic_vector(255 downto 0)
-                       )
-                       signal temp_sum00 : std_logic_vector(31 downto 0);
-                        signal temp_sum01 : std_logic_vector(31 downto 0);
-                        signal temp_sum02 : std_logic_vector(31 downto 0);
-                        signal temp_sum03 : std_logic_vector(31 downto 0);
-                        signal temp_sum10 : std_logic_vector(31 downto 0);
-                        signal temp_sum11: std_logic_vector(31 downto 0);
-                        signal temp_sum12 : std_logic_vector(31 downto 0);
-                        signal temp_sum13 : std_logic_vector(31 downto 0);
-                        signal temp_sum20: std_logic_vector(31 downto 0);
-                        signal temp_sum21: std_logic_vector(31 downto 0);
-                        signal temp_sum22 : std_logic_vector(31 downto 0);
-                        signal temp_sum23 : std_logic_vector(31 downto 0);
-                        signal temp_sum30: std_logic_vector(31 downto 0);
-                        signal temp_sum31 : std_logic_vector(31 downto 0);
-                        signal temp_sum32 : std_logic_vector(31 downto 0);
-                        signal temp_sum33 : std_logic_vector(31 downto 0);
+                       ) is
+                        variable temp_sum00 : std_logic_vector(31 downto 0);
+                        variable temp_sum01 : std_logic_vector(31 downto 0);
+                        variable temp_sum02 : std_logic_vector(31 downto 0);
+                        variable temp_sum03 : std_logic_vector(31 downto 0);
+                        variable temp_sum10 : std_logic_vector(31 downto 0);
+                        variable temp_sum11: std_logic_vector(31 downto 0);
+                        variable temp_sum12 : std_logic_vector(31 downto 0);
+                        variable temp_sum13 : std_logic_vector(31 downto 0);
+                        variable temp_sum20: std_logic_vector(31 downto 0);
+                        variable temp_sum21: std_logic_vector(31 downto 0);
+                        variable temp_sum22 : std_logic_vector(31 downto 0);
+                        variable temp_sum23 : std_logic_vector(31 downto 0);
+                        variable temp_sum30: std_logic_vector(31 downto 0);
+                        variable temp_sum31 : std_logic_vector(31 downto 0);
+                        variable temp_sum32 : std_logic_vector(31 downto 0);
+                        variable temp_sum33 : std_logic_vector(31 downto 0);
         begin
-            temp_sum00<=
+            temp_sum00:=
                 std_logic_vector
                     (
                         (signed(A(255 downto 240)) * signed(B(255 downto 240))) +
@@ -131,7 +131,7 @@ architecture reg of MPU is
                     );
                 C(255 downto 240) <=temp_sum00(31 downto 16);
                 --############################################################################00              
-                temp_sum01<=
+                temp_sum01:=
                 std_logic_vector
                     (
                         (signed(A(255 downto 240)) * signed(B(239 downto 224))) +
@@ -141,7 +141,7 @@ architecture reg of MPU is
                     );
                 C(239 downto 224) <=temp_sum01(31 downto 16);
                 --############################################################################01
-                temp_sum02<=
+                temp_sum02:=
                 std_logic_vector
                     (
                         (signed(A(255 downto 240)) * signed(B(223 downto 208))) +
@@ -151,7 +151,7 @@ architecture reg of MPU is
                     );
                 C(223 downto 208) <=temp_sum02(31 downto 16);
                 --############################################################################02
-                temp_sum03<=
+                temp_sum03:=
                 std_logic_vector
                     (
                         (signed(A(255 downto 240)) * signed(B(207 downto 192))) +
@@ -161,7 +161,7 @@ architecture reg of MPU is
                     );
                 C(207 downto 192) <=temp_sum03(31 downto 16);
                 --############################################################################03
-                temp_sum10<=
+                temp_sum10:=
                 std_logic_vector
                     (
                         (signed(A(191 downto 176)) * signed(B(255 downto 240))) +
@@ -171,7 +171,7 @@ architecture reg of MPU is
                     );
                 C(191 downto 176) <=temp_sum10(31 downto 16);
                 
-                temp_sum11<=
+                temp_sum11:=
                 std_logic_vector
                 (
                     (signed(A(191 downto 176)) * signed(B(239 downto 224))) +
@@ -181,7 +181,7 @@ architecture reg of MPU is
                 );
                 C(175 downto 160) <=temp_sum11(31 downto 16);
 
-                temp_sum12<=
+                temp_sum12:=
                 std_logic_vector
                 (
                     (signed(A(191 downto 176)) * signed(B(223 downto 208))) +           
@@ -191,7 +191,7 @@ architecture reg of MPU is
                 );
                 C(159 downto 144) <=temp_sum12(31 downto 16);
 
-                temp_sum13<=
+                temp_sum13:=
                 std_logic_vector
                 (
                     (signed(A(191 downto 176)) * signed(B(207 downto 192))) +
@@ -201,7 +201,7 @@ architecture reg of MPU is
                 );
                 C(143 downto 128) <=temp_sum13(31 downto 16);
 
-                temp_sum20<=
+                temp_sum20:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
@@ -211,7 +211,7 @@ architecture reg of MPU is
                 );
                 C(127 downto 112) <=temp_sum20(31 downto 16);
 
-                temp_sum21<=
+                temp_sum21:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
@@ -221,7 +221,7 @@ architecture reg of MPU is
                 );
                 C(111 downto 96) <=temp_sum21(31 downto 16);
 
-                temp_sum22<=
+                temp_sum22:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
@@ -231,7 +231,7 @@ architecture reg of MPU is
                 );
                 C(95  downto 80) <=temp_sum22(31 downto 16);
 
-                temp_sum23<=
+                temp_sum23:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
@@ -241,7 +241,7 @@ architecture reg of MPU is
                 );
                 C(79 downto 64) <=temp_sum23(31 downto 16);
 
-                temp_sum30<=
+                temp_sum30:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
@@ -251,7 +251,7 @@ architecture reg of MPU is
                 );
                 C(63 downto 48) <=temp_sum30(31 downto 16);
 
-                temp_sum31<=
+                temp_sum31:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
@@ -261,7 +261,7 @@ architecture reg of MPU is
                 );
                 C(47 downto 32) <=temp_sum31(31 downto 16);
 
-                temp_sum32<=
+                temp_sum32:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
@@ -271,7 +271,7 @@ architecture reg of MPU is
                 );
                 C(31 downto 16) <=temp_sum32(31 downto 16);
 
-                temp_sum33<=
+                temp_sum33:=
                 std_logic_vector
                 (
                     (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
@@ -282,25 +282,13 @@ architecture reg of MPU is
                 C(15 downto 0) <=temp_sum33(31 downto 16);
     end MUL;
 
-    procedure MAC   (
-                    signal MAT1 	:   in  std_logic_vector(255 downto 0);
-                    signal MAT2 	:   in  std_logic_vector(255 downto 0);
-                    signal MAT3 	:   inout  std_logic_vector(255 downto 0);
-                    )
-            signal  MATAUX  :   std_logic_vector(255 downto 0);
-
-        begin
-            MUL(MAT1, MAT2, MATAUX );
-            SOMA(MAT3, MATAUX, MAT3);
-    end MAC;
-
 begin
     data <= (others => 'Z');
     -- LINHA ABAIXO FEITa APENAS PARA TESTE
         com(15 downto 0) <= "0000000000000000";
     --LINHAS ACIMA FEITAS APENAS PARA TESTE SEM O r8
 	    -- Processamento da ULA baseado no opcode
-    process(A, B, com, clk, rst, data)
+    process(A, B, AUX, com, clk, rst, data)
     begin
         case com(15 downto 0) is  --Se com na posição address for igual a:
             when "0000000000000000"=>                              --fill A com data
@@ -311,12 +299,13 @@ begin
                 FILL(C, data);
             when "0000000000000011"=>                              --Soma A, B, Armazena em C
                 SOMA(A, B, C);
-            when "0000000000000100"=>
+            when "0000000000000100"=>                              --Sub A, B, Armazena em C
                 SUB(A, B, C);
             when "0000000000000101"=>                              --Multiplicação C = A * B
                 MUL(A, B, C);
             when "0000000000000111"=>
-                MAC(A, B, C);
+                MUL(A, B, AUX);
+                SOMA(C, AUX, C);
                 
                 
 
