@@ -1,8 +1,6 @@
 library IEEE;
-use IEEE.Std_Logic_1164.all;
-use IEEE.Std_Logic_Signed.all;
-use IEEE.Std_Logic_Unsigned.all;
-use IEEE.Numeric_Std.all;  -- Adicione esta biblioteca para manipular operações aritméticas
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.ALL;
 use work.R8.all;
 
 entity MPU is
@@ -14,18 +12,287 @@ entity MPU is
         address: in std_logic_vector(15 downto 0);
         data: inout std_logic_vector(15 downto 0)
     );
+
+    --ce_n chip enable = chip disponível, se estiver realizando operação, está 1
+    --write enable chip write, 0 quando pode escrever e 1 quando não
+    --output enable == REad
 end entity MPU;
 
 architecture reg of MPU is
     signal A 	: std_logic_vector(255 downto 0);
     signal B 	: std_logic_vector(255 downto 0);
     signal C 	: std_logic_vector(255 downto 0);
+    signal AUX  : std_logic_vector(255 downto 0);
     signal com  : std_logic_vector(255 downto 0);
-	 signal regA : std_logic_vector(15 downto 0);
-	 signal regB : std_logic_vector(15 downto 0);
-	 signal regC : std_logic_vector(31 downto 0);
-    signal temp_sum : std_logic_vector(31 downto 0);
+
+
      
+
+    procedure SOMA  ( 
+                    signal MAT1 	:   in  std_logic_vector(255 downto 0);
+                    signal MAT2 	:   in  std_logic_vector(255 downto 0);
+                    signal MATR 	:   out std_logic_vector(255 downto 0)
+                    )
+        begin
+            MATR(255 downto 240) <= std_logic_vector(signed(MAT1(255 downto 240)) + signed(MAT2(255 downto 240)));
+            MATR(239 downto 224) <= std_logic_vector(signed(MAT1(239 downto 224)) + signed(MAT2(239 downto 224)));
+            MATR(223 downto 208) <= std_logic_vector(signed(MAT1(223 downto 208)) + signed(MAT2(223 downto 208)));
+            MATR(207 downto 192) <= std_logic_vector(signed(MAT1(207 downto 192)) + signed(MAT2(207 downto 192)));
+            MATR(191 downto 176) <= std_logic_vector(signed(MAT1(191 downto 176)) + signed(MAT2(191 downto 176)));
+            MATR(175 downto 160) <= std_logic_vector(signed(MAT1(175 downto 160)) + signed(MAT2(175 downto 160)));
+            MATR(159 downto 144) <= std_logic_vector(signed(MAT1(159 downto 144)) + signed(MAT2(159 downto 144)));
+            MATR(143 downto 128) <= std_logic_vector(signed(MAT1(143 downto 128)) + signed(MAT2(143 downto 128)));
+            MATR(127 downto 112) <= std_logic_vector(signed(MAT1(127 downto 112)) + signed(MAT2(127 downto 112)));
+            MATR(111 downto 96)  <= std_logic_vector(signed(MAT1(111 downto 96)) + signed(MAT2(111 downto 96)));
+            MATR(95  downto 80)  <= std_logic_vector(signed(MAT1(95  downto 80)) + signed(MAT2(95  downto 80)));
+            MATR(79  downto 64)  <= std_logic_vector(signed(MAT1(79  downto 64)) + signed(MAT2(79  downto 64)));
+            MATR(63  downto 48)  <= std_logic_vector(signed(MAT1(63  downto 48)) + signed(MAT2(63  downto 48)));
+            MATR(47  downto 32)  <= std_logic_vector(signed(MAT1(47  downto 32)) + signed(MAT2(47  downto 32)));
+            MATR(31  downto 16)  <= std_logic_vector(signed(MAT1(31  downto 16)) + signed(MAT2(31  downto 16)));
+            MATR(15  downto 0)   <= std_logic_vector(signed(MAT1(15  downto 0)) + signed(MAT2(15  downto 0)));
+    end SOMA;
+
+    procedure SUB  ( 
+                signal MAT1 	:   in  std_logic_vector(255 downto 0);
+                signal MAT2 	:   in  std_logic_vector(255 downto 0);
+                signal MATR 	:   out std_logic_vector(255 downto 0)
+                )
+        begin
+            MATR(255 downto 240) <= std_logic_vector(signed(MAT1(255 downto 240)) - signed(MAT2(255 downto 240)));
+            MATR(239 downto 224) <= std_logic_vector(signed(MAT1(239 downto 224)) - signed(MAT2(239 downto 224)));
+            MATR(223 downto 208) <= std_logic_vector(signed(MAT1(223 downto 208)) - signed(MAT2(223 downto 208)));
+            MATR(207 downto 192) <= std_logic_vector(signed(MAT1(207 downto 192)) - signed(MAT2(207 downto 192)));
+            MATR(191 downto 176) <= std_logic_vector(signed(MAT1(191 downto 176)) - signed(MAT2(191 downto 176)));
+            MATR(175 downto 160) <= std_logic_vector(signed(MAT1(175 downto 160)) - signed(MAT2(175 downto 160)));
+            MATR(159 downto 144) <= std_logic_vector(signed(MAT1(159 downto 144)) - signed(MAT2(159 downto 144)));
+            MATR(143 downto 128) <= std_logic_vector(signed(MAT1(143 downto 128)) - signed(MAT2(143 downto 128)));
+            MATR(127 downto 112) <= std_logic_vector(signed(MAT1(127 downto 112)) - signed(MAT2(127 downto 112)));
+            MATR(111 downto 96)  <= std_logic_vector(signed(MAT1(111 downto 96)) - signed(MAT2(111 downto 96)));
+            MATR(95  downto 80)  <= std_logic_vector(signed(MAT1(95  downto 80)) - signed(MAT2(95  downto 80)));
+            MATR(79  downto 64)  <= std_logic_vector(signed(MAT1(79  downto 64)) - signed(MAT2(79  downto 64)));
+            MATR(63  downto 48)  <= std_logic_vector(signed(MAT1(63  downto 48)) - signed(MAT2(63  downto 48)));
+            MATR(47  downto 32)  <= std_logic_vector(signed(MAT1(47  downto 32)) - signed(MAT2(47  downto 32)));
+            MATR(31  downto 16)  <= std_logic_vector(signed(MAT1(31  downto 16)) - signed(MAT2(31  downto 16)));
+            MATR(15  downto 0)   <= std_logic_vector(signed(MAT1(15  downto 0)) - signed(MAT2(15  downto 0)));
+    end SUB;
+
+    procedure FILL  (
+                    signal MAT 	:   out  std_logic_vector(255 downto 0);
+                    signal data :   in std_logic_vector(15 downto 0)
+                    )
+        begin
+            MAT(255 downto 240) <= data;
+            MAT(239 downto 224) <= data;
+            MAT(223 downto 208) <= data;
+            MAT(207 downto 192) <= data;
+            MAT(191 downto 176) <= data;
+            MAT(175 downto 160) <= data;
+            MAT(159 downto 144) <= data;
+            MAT(143 downto 128) <= data;
+            MAT(127 downto 112) <= data;
+            MAT(111 downto 96)  <= data;
+            MAT(95  downto 80)  <= data;
+            MAT(79  downto 64)  <= data;
+            MAT(63  downto 48)  <= data;
+            MAT(47  downto 32)  <= data;
+            MAT(31  downto 16)  <= data;
+            MAT(15  downto 0)   <= data;
+    end FILL;
+
+    procedure MUL  (
+                        signal A 	:   in  std_logic_vector(255 downto 0);
+                        signal B 	:   in  std_logic_vector(255 downto 0);
+                        signal C 	:   out std_logic_vector(255 downto 0)
+                       )
+                       signal temp_sum00 : std_logic_vector(31 downto 0);
+                        signal temp_sum01 : std_logic_vector(31 downto 0);
+                        signal temp_sum02 : std_logic_vector(31 downto 0);
+                        signal temp_sum03 : std_logic_vector(31 downto 0);
+                        signal temp_sum10 : std_logic_vector(31 downto 0);
+                        signal temp_sum11: std_logic_vector(31 downto 0);
+                        signal temp_sum12 : std_logic_vector(31 downto 0);
+                        signal temp_sum13 : std_logic_vector(31 downto 0);
+                        signal temp_sum20: std_logic_vector(31 downto 0);
+                        signal temp_sum21: std_logic_vector(31 downto 0);
+                        signal temp_sum22 : std_logic_vector(31 downto 0);
+                        signal temp_sum23 : std_logic_vector(31 downto 0);
+                        signal temp_sum30: std_logic_vector(31 downto 0);
+                        signal temp_sum31 : std_logic_vector(31 downto 0);
+                        signal temp_sum32 : std_logic_vector(31 downto 0);
+                        signal temp_sum33 : std_logic_vector(31 downto 0);
+        begin
+            temp_sum00<=
+                std_logic_vector
+                    (
+                        (signed(A(255 downto 240)) * signed(B(255 downto 240))) +
+                        (signed(A(239 downto 224)) * signed(B(191 downto 176))) +
+                        (signed(A(223 downto 208)) * signed(B(127 downto 112))) +
+                        (signed(A(207 downto 192)) * signed(B(63 downto 48)))
+                    );
+                C(255 downto 240) <=temp_sum00(31 downto 16);
+                --############################################################################00              
+                temp_sum01<=
+                std_logic_vector
+                    (
+                        (signed(A(255 downto 240)) * signed(B(239 downto 224))) +
+                        (signed(A(239 downto 224)) * signed(B(175 downto 160))) +
+                        (signed(A(223 downto 208)) * signed(B(111 downto 96))) +
+                        (signed(A(207 downto 192)) * signed(B(47 downto 32)))
+                    );
+                C(239 downto 224) <=temp_sum01(31 downto 16);
+                --############################################################################01
+                temp_sum02<=
+                std_logic_vector
+                    (
+                        (signed(A(255 downto 240)) * signed(B(223 downto 208))) +
+                        (signed(A(239 downto 224)) * signed(B(159 downto 144))) +
+                        (signed(A(223 downto 208)) * signed(B(95  downto 80))) +
+                        (signed(A(207 downto 192)) * signed(B(31 downto 16)))
+                    );
+                C(223 downto 208) <=temp_sum02(31 downto 16);
+                --############################################################################02
+                temp_sum03<=
+                std_logic_vector
+                    (
+                        (signed(A(255 downto 240)) * signed(B(207 downto 192))) +
+                        (signed(A(239 downto 224)) * signed(B(143 downto 128))) +
+                        (signed(A(223 downto 208)) * signed(B(79 downto 64))) +
+                        (signed(A(207 downto 192)) * signed(B(15 downto 0)))
+                    );
+                C(207 downto 192) <=temp_sum03(31 downto 16);
+                --############################################################################03
+                temp_sum10<=
+                std_logic_vector
+                    (
+                        (signed(A(191 downto 176)) * signed(B(255 downto 240))) +
+                        (signed(A(175 downto 160)) * signed(B(191 downto 176))) +
+                        (signed(A(159 downto 144)) * signed(B(127 downto 112))) +
+                        (signed(A(143 downto 128)) * signed(B(63 downto 48)))
+                    );
+                C(191 downto 176) <=temp_sum10(31 downto 16);
+                
+                temp_sum11<=
+                std_logic_vector
+                (
+                    (signed(A(191 downto 176)) * signed(B(239 downto 224))) +
+                    (signed(A(175 downto 160)) * signed(B(175 downto 160))) +
+                    (signed(A(159 downto 144)) * signed(B(111 downto 96))) +
+                    (signed(A(143 downto 128)) * signed(B(47 downto 32)))
+                );
+                C(175 downto 160) <=temp_sum11(31 downto 16);
+
+                temp_sum12<=
+                std_logic_vector
+                (
+                    (signed(A(191 downto 176)) * signed(B(223 downto 208))) +           
+                    (signed(A(175 downto 160)) * signed(B(159 downto 144))) +
+                    (signed(A(159 downto 144)) * signed(B(95  downto 80))) +
+                    (signed(A(143 downto 128)) * signed(B(31 downto 16)))
+                );
+                C(159 downto 144) <=temp_sum12(31 downto 16);
+
+                temp_sum13<=
+                std_logic_vector
+                (
+                    (signed(A(191 downto 176)) * signed(B(207 downto 192))) +
+                    (signed(A(175 downto 160)) * signed(B(143 downto 128))) +
+                    (signed(A(159 downto 144)) * signed(B(79 downto 64))) +
+                    (signed(A(143 downto 128)) * signed(B(15 downto 0)))
+                );
+                C(143 downto 128) <=temp_sum13(31 downto 16);
+
+                temp_sum20<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
+                    (signed(A(111 downto 96))  * signed(B(191 downto 176))) +
+                    (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
+                    (signed(A(79 downto 64))   * signed(B(63 downto 48)))
+                );
+                C(127 downto 112) <=temp_sum20(31 downto 16);
+
+                temp_sum21<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
+                    (signed(A(111 downto 96))  * signed(B(175 downto 160))) +
+                    (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
+                    (signed(A(79 downto 64))   * signed(B(47 downto 32)))
+                );
+                C(111 downto 96) <=temp_sum21(31 downto 16);
+
+                temp_sum22<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
+                    (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
+                    (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
+                    (signed(A(79 downto 64))   * signed(B(31 downto 16)))
+                );
+                C(95  downto 80) <=temp_sum22(31 downto 16);
+
+                temp_sum23<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
+                    (signed(A(111 downto 96))  * signed(B(143 downto 128))) +
+                    (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
+                    (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                );
+                C(79 downto 64) <=temp_sum23(31 downto 16);
+
+                temp_sum30<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
+                    (signed(A(111 downto 96))  * signed(B(191 downto 176))) +
+                    (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
+                    (signed(A(79 downto 64))   * signed(B(63 downto 48)))
+                );
+                C(63 downto 48) <=temp_sum30(31 downto 16);
+
+                temp_sum31<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
+                    (signed(A(111 downto 96))  * signed(B(175 downto 160))) +
+                    (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
+                    (signed(A(79 downto 64))   * signed(B(47 downto 32)))
+                );
+                C(47 downto 32) <=temp_sum31(31 downto 16);
+
+                temp_sum32<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
+                    (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
+                    (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
+                    (signed(A(79 downto 64))   * signed(B(31 downto 16)))
+                );
+                C(31 downto 16) <=temp_sum32(31 downto 16);
+
+                temp_sum33<=
+                std_logic_vector
+                (
+                    (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
+                    (signed(A(111 downto 96))  * signed(B(143 downto 128))) +
+                    (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
+                    (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                );
+                C(15 downto 0) <=temp_sum33(31 downto 16);
+    end MUL;
+
+    procedure MAC   (
+                    signal MAT1 	:   in  std_logic_vector(255 downto 0);
+                    signal MAT2 	:   in  std_logic_vector(255 downto 0);
+                    signal MAT3 	:   inout  std_logic_vector(255 downto 0);
+                    )
+            signal  MATAUX  :   std_logic_vector(255 downto 0);
+
+        begin
+            MUL(MAT1, MAT2, MATAUX );
+            SOMA(MAT3, MATAUX, MAT3);
+    end MAC;
 
 begin
     data <= (others => 'Z');
@@ -37,110 +304,23 @@ begin
     begin
         case com(15 downto 0) is  --Se com na posição address for igual a:
             when "0000000000000000"=>                              --fill A com data
-                A(255 downto 240) <= data;
-                A(239 downto 224) <= data;
-                A(223 downto 208) <= data;
-                A(207 downto 192) <= data;
-                A(191 downto 176) <= data;
-                A(175 downto 160) <= data;
-                A(159 downto 144) <= data;
-                A(143 downto 128) <= data;
-                A(127 downto 112) <= data;
-                A(111 downto 96)  <= data;
-                A(95  downto 80)  <= data;
-                A(79  downto 64)  <= data;
-                A(63  downto 48)  <= data;
-                A(47  downto 32)  <= data;
-                A(31  downto 16)  <= data;
-                A(15  downto 0)   <= data;
+                FILL(A, data);
             when "0000000000000001"=>                              --fill B com data
-                B(255 downto 240) <= data;
-                B(239 downto 224) <= data;
-                B(223 downto 208) <= data;
-                B(207 downto 192) <= data;
-                B(191 downto 176) <= data;
-                B(175 downto 160) <= data;
-                B(159 downto 144) <= data;
-                B(143 downto 128) <= data;
-                B(127 downto 112) <= data;
-                B(111 downto 96)  <= data;
-                B(95  downto 80)  <= data;
-                B(79  downto 64)  <= data;
-                B(63  downto 48)  <= data;
-                B(47  downto 32)  <= data;
-                B(31  downto 16)  <= data;
-                B(15  downto 0)   <= data;
+                FILL(B, data);
             when "0000000000000010"=>                              --fill C com data
-                C(255 downto 240) <= data;
-                C(239 downto 224) <= data;
-                C(223 downto 208) <= data;
-                C(207 downto 192) <= data;
-                C(191 downto 176) <= data;
-                C(175 downto 160) <= data;
-                C(159 downto 144) <= data;
-                C(143 downto 128) <= data;
-                C(127 downto 112) <= data;
-                C(111 downto 96)  <= data;
-                C(95  downto 80)  <= data;
-                C(79  downto 64)  <= data;
-                C(63  downto 48)  <= data;
-                C(47  downto 32)  <= data;
-                C(31  downto 16)  <= data;
-                C(15  downto 0)   <= data;
-            when "0000000000000011"=>
-                C(255 downto 240) <= std_logic_vector(unsigned(A(255 downto 240)) + unsigned(B(255 downto 240)));
-                C(239 downto 224) <= std_logic_vector(unsigned(A(239 downto 224)) + unsigned(B(239 downto 224)));
-                C(223 downto 208) <= std_logic_vector(unsigned(A(223 downto 208)) + unsigned(B(223 downto 208)));
-                C(207 downto 192) <= std_logic_vector(unsigned(A(207 downto 192)) + unsigned(B(207 downto 192)));
-                C(191 downto 176) <= std_logic_vector(unsigned(A(191 downto 176)) + unsigned(B(191 downto 176)));
-                C(175 downto 160) <= std_logic_vector(unsigned(A(175 downto 160)) + unsigned(B(175 downto 160)));
-                C(159 downto 144) <= std_logic_vector(unsigned(A(159 downto 144)) + unsigned(B(159 downto 144)));
-                C(143 downto 128) <= std_logic_vector(unsigned(A(143 downto 128)) + unsigned(B(143 downto 128)));
-                C(127 downto 112) <= std_logic_vector(unsigned(A(127 downto 112)) + unsigned(B(127 downto 112)));
-                C(111 downto 96)  <= std_logic_vector(unsigned(A(111 downto 96)) + unsigned(B(111 downto 96)));
-                C(95  downto 80)  <= std_logic_vector(unsigned(A(95  downto 80)) + unsigned(B(95  downto 80)));
-                C(79  downto 64)  <= std_logic_vector(unsigned(A(79  downto 64)) + unsigned(B(79  downto 64)));
-                C(63  downto 48)  <= std_logic_vector(unsigned(A(63  downto 48)) + unsigned(B(63  downto 48)));
-                C(47  downto 32)  <= std_logic_vector(unsigned(A(47  downto 32)) + unsigned(B(47  downto 32)));
-                C(31  downto 16)  <= std_logic_vector(unsigned(A(31  downto 16)) + unsigned(B(31  downto 16)));
-                C(15  downto 0)   <= std_logic_vector(unsigned(A(15  downto 0)) + unsigned(B(15  downto 0)));
+                FILL(C, data);
+            when "0000000000000011"=>                              --Soma A, B, Armazena em C
+                SOMA(A, B, C);
             when "0000000000000100"=>
-                C(255 downto 240) <= std_logic_vector(unsigned(A(255 downto 240)) - unsigned(B(255 downto 240)));
-                C(239 downto 224) <= std_logic_vector(unsigned(A(239 downto 224)) - unsigned(B(239 downto 224)));
-                C(223 downto 208) <= std_logic_vector(unsigned(A(223 downto 208)) - unsigned(B(223 downto 208)));
-                C(207 downto 192) <= std_logic_vector(unsigned(A(207 downto 192)) - unsigned(B(207 downto 192)));
-                C(191 downto 176) <= std_logic_vector(unsigned(A(191 downto 176)) - unsigned(B(191 downto 176)));
-                C(175 downto 160) <= std_logic_vector(unsigned(A(175 downto 160)) - unsigned(B(175 downto 160)));
-                C(159 downto 144) <= std_logic_vector(unsigned(A(159 downto 144)) - unsigned(B(159 downto 144)));
-                C(143 downto 128) <= std_logic_vector(unsigned(A(143 downto 128)) - unsigned(B(143 downto 128)));
-                C(127 downto 112) <= std_logic_vector(unsigned(A(127 downto 112)) - unsigned(B(127 downto 112)));
-                C(111 downto 96)  <= std_logic_vector(unsigned(A(111 downto 96)) - unsigned(B(111 downto 96)));
-                C(95  downto 80)  <= std_logic_vector(unsigned(A(95  downto 80)) - unsigned(B(95  downto 80)));
-                C(79  downto 64)  <= std_logic_vector(unsigned(A(79  downto 64)) - unsigned(B(79  downto 64)));
-                C(63  downto 48)  <= std_logic_vector(unsigned(A(63  downto 48)) - unsigned(B(63  downto 48)));
-                C(47  downto 32)  <= std_logic_vector(unsigned(A(47  downto 32)) - unsigned(B(47  downto 32)));
-                C(31  downto 16)  <= std_logic_vector(unsigned(A(31  downto 16)) - unsigned(B(31  downto 16)));
-                C(15  downto 0)   <= std_logic_vector(unsigned(A(15  downto 0)) - unsigned(B(15  downto 0)));
-            when "0000000000000101"=>
-                if rising_edge(clk) then
-                    -- Para cada linha de A (i varia de 0 a 15)
-                    for i in 0 to 15 loop
-                        -- Para cada coluna de B (j varia de 0 a 15)
-                        for j in 0 to 15 loop
-                            -- Inicializa o somatório para C(i, j)
-                            
-                            -- Para cada elemento da linha i de A e coluna j de B
-                            for k in 0 to 15 loop
-                                -- Multiplica o elemento A(i, k) pelo elemento B(k, j)
-                                temp_sum <= temp_sum + (unsigned(A((i * 16 + k) * 16 + 15 downto (i * 16 + k) * 16)) *
-                                            unsigned(B((k * 16 + j) * 16 + 15 downto (k * 16 + j) * 16)));
-                            end loop;
-            
-                            -- Atribui o resultado à posição C(i, j)
-                            C((i * 16 + j) * 16 + 15 downto (i * 16 + j) * 16) <= std_logic_vector(temp_sum);
-                        end loop;
-                    end loop;
-                end if;
+                SUB(A, B, C);
+            when "0000000000000101"=>                              --Multiplicação C = A * B
+                MUL(A, B, C);
+            when "0000000000000111"=>
+                MAC(A, B, C);
+                
+                
+
+
             when others =>        
         end case;
     end process;
