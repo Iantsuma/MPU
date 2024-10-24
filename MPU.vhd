@@ -282,6 +282,30 @@ architecture reg of MPU is
                 C(15 downto 0) <=temp_sum33(31 downto 16);
     end MUL;
 
+    procedure ID   (
+                    signal MAT 	:   out  std_logic_vector(255 downto 0);
+                    signal data :   in std_logic_vector(15 downto 0)
+                   ) is
+        begin
+        MAT(255 downto 240) <= data;
+        MAT(239 downto 224) <= "0000000000000000";
+        MAT(223 downto 208) <= "0000000000000000";
+        MAT(207 downto 192) <= "0000000000000000";
+        MAT(191 downto 176) <= "0000000000000000";
+        MAT(175 downto 160) <= data;
+        MAT(159 downto 144) <= "0000000000000000";
+        MAT(143 downto 128) <= "0000000000000000";
+        MAT(127 downto 112) <= "0000000000000000";
+        MAT(111 downto 96)  <= "0000000000000000";
+        MAT(95  downto 80)  <= data;
+        MAT(79  downto 64)  <= "0000000000000000";
+        MAT(63  downto 48)  <= "0000000000000000";
+        MAT(47  downto 32)  <= "0000000000000000";
+        MAT(31  downto 16)  <= "0000000000000000";
+        MAT(15  downto 0)   <= data;
+
+    end ID;
+
 begin
     data <= (others => 'Z');
     -- LINHA ABAIXO FEITa APENAS PARA TESTE
@@ -290,29 +314,37 @@ begin
 	    -- Processamento da ULA baseado no opcode
     process(A, B, AUX, com, clk, rst, data)
     begin
-        case com(15 downto 0) is  --Se com na posição address for igual a:
-            when "0000000000000000"=>                              --fill A com data
-                FILL(A, data);
-            when "0000000000000001"=>                              --fill B com data
-                FILL(B, data);
-            when "0000000000000010"=>                              --fill C com data
-                FILL(C, data);
-            when "0000000000000011"=>                              --Soma A, B, Armazena em C
-                SOMA(A, B, C);
-            when "0000000000000100"=>                              --Sub A, B, Armazena em C
-                SUB(A, B, C);
-            when "0000000000000101"=>                              --Multiplicação C = A * B
-                MUL(A, B, C);
-            when "0000000000000111"=>
-                MUL(A, B, AUX);
-                SOMA(C, AUX, C);
-                
-                
+        if rising_edge(clk) then
+            case com(15 downto 0) is  --Se com na posição address for igual a:
+                when "0000000000000000"=>                              --fill A com data
+                    FILL(A, data);
+                when "0000000000000001"=>                              --fill B com data
+                    FILL(B, data);
+                when "0000000000000010"=>                              --fill C com data
+                    FILL(C, data);
+                when "0000000000000011"=>                              --Soma A, B, Armazena em C
+                    SOMA(A, B, C);
+                when "0000000000000100"=>                              --Sub A, B, Armazena em C
+                    SUB(A, B, C);
+                when "0000000000000101"=>                              --Multiplicação C = A X B
+                    MUL(A, B, C);
+                when "0000000000000111"=>                              --Mac C= C + A X B
+                    MUL(A, B, AUX);
+                    SOMA(C, AUX, C);
+                when "0000000000001000"=>                              --Identidade A, B e C igual a data respectivamente
+                    ID(A, data);                                         
+                when "0000000000001001"=>
+                    ID(B, data);
+                when "0000000000001010"=>
+                    ID(C, data);
+                    
+                    
+                    
 
 
-            when others =>        
-        end case;
+                when others =>        
+            end case;
+        end if;
     end process;
 
 end architecture reg;
-	
