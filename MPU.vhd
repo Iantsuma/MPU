@@ -602,9 +602,9 @@ begin
             case com(15 downto 0) is  --Se com na posição addressess for igual a:
                 when "1111111111111111"=>                              --fill A com data
                     if we_n = '0' then 
-                        WRITE(address, data, MATRIX);
+                        WRITE(address(5 downto 0), data, MATRIX);
                     elsif oe_n = '0' then
-                        READ(address, data, MATRIX);
+                        READ(address(5 downto 0), data, MATRIX);
                     
                     end if;
                 when "1000000000000000"=>
