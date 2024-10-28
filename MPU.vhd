@@ -591,59 +591,71 @@ architecture reg of MPU is
 
     end WRITE;
 begin
-    data <= (others => 'Z');
-    -- LINHA ABAIXO FEITa APENAS PARA TESTE
-        MATRIX(15 downto 0) <= "0000000000000000";
-    --LINHAS ACIMA FEITAS APENAS PARA TESTE SEM O r8
+    
+
 	    -- Processamento da ULA baseado no opcode
-    process(MATRIX, AUX, oe_n, ce_n, we_n, clk, rst, data, address)
-    begin
-        if rising_edge(clk) then
-            case com(15 downto 0) is  --Se com na posição addressess for igual a:
-                when "1111111111111111"=>                              --fill A com data
-                    if we_n = '0' then 
-                        WRITE(address(5 downto 0), data, MATRIX);
-                    elsif oe_n = '0' then
-                        READ(address(5 downto 0), data, MATRIX);
-                    
-                    end if;
-                when "1000000000000000"=>
-
-                when "0100000000000000"=>
-                    --Passa pra data
-                when "0010000000000000"=>
-                    --Passa pra data
-                when "0000000000000000"=>                              --fill A com data
-                    FILL(MATRIX(1023 downto 768), data);
-                when "0000000000000001"=>                              --fill B com data
-                    FILL(MATRIX(767 downto 512), data);
-                when "0000000000000010"=>                              --fill C com data
-                    FILL(MATRIX(511 downto 256), data);
-                when "0000000000000011"=>                              --Soma A, B, Armazena em C
-                    SOMA(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
-                when "0000000000000100"=>                              --Sub A, B, Armazena em C
-                    SUB(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
-                when "0000000000000101"=>                              --Multiplicação C = A X B
-                    MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
-                when "0000000000000111"=>                              --Mac C= C + A X B
-                    MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), AUX);
-                    SOMA(MATRIX(511 downto 256), AUX, MATRIX(511 downto 256));
-                when "0000000000001000"=>                              --Identidade A, B e C igual a data respectivamente
-                    ID(MATRIX(1023 downto 768), data);                                         
-                when "0000000000001001"=>
-                    ID(MATRIX(767 downto 512), data);
-                when "0000000000001010"=>
-                    ID(MATRIX(511 downto 256), data);
-                
-                    
-                    
 
 
-                when others =>        
-            end case;
-        end if;
-    end process;
+        process(MATRIX, AUX, oe_n, ce_n, we_n, clk, rst, data, address, intr)
+        begin
+                if rising_edge(clk) then
+                        if rst = '1' then
+                                intr <= '0';
+                        end if;
+
+                        if we_n = '0' and ce_n = '1' then       --Escrita
+                                data <= (others => 'Z');
+                                WRITE(address(5 downto 0), data, MATRIX);
+                        elsif oe_n = '0' and ce_n = '1' then    --Leitura
+                                READ(address(5 downto 0), data, MATRIX);
+                        elsif ce_n = '0' then                   --Operações
+
+
+                                case MATRIX(15 downto 0) is  --Se a porção dos últimos 16 bits da matriz, na zona de controle, for:
+
+                                        when "0000000000000000"=>--Soma de A, B e salva no C.
+                                                SOMA(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
+                                                                             
+                                        when "0000000000000001"=>                              
+                                                SUB(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
+                                        when "0000000000000010"=>                              
+                                                MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
+                                        when "0000000000000011"=>                              
+                                                MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), AUX);
+                                                SOMA(MATRIX(511 downto 256), AUX, MATRIX(511 downto 256));                   
+                                        when "0000000000000100"=>                              
+                                                case MATRIX (31 downto 16) is
+                                                        when "0000000000000000"=>
+                                                                FILL(MATRIX(1023 downto 768), data);
+                                                        when "0000000000000001"=>
+                                                                FILL(MATRIX(767 downto 512), data);
+                                                        when "0000000000000010"=>   
+                                                                FILL(MATRIX(511 downto 256), data);
+                                                        when others =>
+                                                                null;
+                                                end case;
+                                        when "0000000000000101"=>                              
+                                                case MATRIX (31 downto 16) is
+                                                        when "0000000000000000"=>
+                                                                ID(MATRIX(1023 downto 768), data);
+                                                        when "0000000000000001"=>
+                                                                ID(MATRIX(767 downto 512), data);
+                                                        when "0000000000000010"=>   
+                                                                ID(MATRIX(511 downto 256), data);
+                                                        when others =>
+                                                                null;
+                                                end case;
+                                        
+                                        when others =>
+                                                null;
+                                end case;
+                                intr <= '1';
+                        end if;
+                end if;
+        end process;
 
 end architecture reg;
+
+
 
 

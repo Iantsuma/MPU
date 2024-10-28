@@ -9,7 +9,9 @@ architecture behavior of MPU_tb is
     -- Component declaration of the Unit Under Test (UUT)
     component MPU
         port(
-            ce_n, we_n, oe_n: in std_logic;
+            ce_n: in std_logic;
+            we_n: in std_logic;
+            oe_n: in std_logic;
             intr: out std_logic;
             clk:  in  std_logic;
             rst:  in  std_logic;
@@ -19,11 +21,13 @@ architecture behavior of MPU_tb is
     end component;
 
     -- Signals to connect to the UUT
-    signal ce_n, we_n, oe_n: std_logic := '1';
+    signal ce_n: std_logic := '1';
+    signal we_n: std_logic := '1';
+    signal oe_n: std_logic := '1';
     signal intr: std_logic;
     signal clk: std_logic := '0';
-    signal rst: std_logic;
-    signal address: std_logic_vector(15 downto 0) := (others => '0');
+    signal rst: std_logic := '0';
+    signal address: std_logic_vector(15 downto 0);
     signal data: std_logic_vector(15 downto 0);
 
     -- Matrices A, B and C as signals
@@ -31,13 +35,15 @@ architecture behavior of MPU_tb is
     signal B : std_logic_vector(255 downto 0);
     signal C : std_logic_vector(255 downto 0);
 
+    constant clk_period : time := 1 ns;
+
 begin
     -- Instantiate the Unit Under Test (UUT)
     uut: MPU
         port map (
             ce_n => ce_n,
             we_n => we_n,
-            oe_n => oe_n,  --Output enable, ligado quando usando o data como saída, else Z
+            oe_n => oe_n,
             intr => intr,
             clk  => clk,
             rst  => rst,
@@ -45,15 +51,42 @@ begin
             data => data
         );
     -- Test process
-    clk_process: process
+    clk_process : process
     begin
         clk <= not(clk);
-        wait for 2 ns;
+        wait for clk_period;
     end process;
 
-    stimulus_process: process
+
+    stimulus: process
         begin
+            rst <= '1';
+            wait for clk_period;
+            rst <= '0';
+            wait for clk_period;
+            we_n <='0';
+            ce_n <='1';
+            address <= "1111111111111111";
+            data <="0000000000000100";
+            wait for clk_period;
+            we_n <='0';
+            ce_n <='1';
+            address <= "1111111111111110";
+            data <="0000000000000000";
+            wait for clk_period;
+            ce_n <='0';
+            wait until intr = '1';
+            wait for clk_period;
+            rst <= '1';
+            we_n <='1';
+            oe_n <='0';
+            address <="0000000000000000";
+            --data <= (others => 'Z');
+            wait for clk_period;
 
 
+
+            
+            wait for clk_period;
     end process;
 end architecture behavior;
