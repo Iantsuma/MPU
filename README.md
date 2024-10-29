@@ -1,5 +1,4 @@
 # MPU
 Desafios atuais:
 
-  Fazer as matrizes serem legiveis no TB para fins de TESTES
-  clk funcionando
+  Fazer o MAC funcionar direito. Suspeita de problemas com a cadência do clock
