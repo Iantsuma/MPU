@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.ALL;
 use work.R8.all;
+use std.textio.all;
 
 entity MPU is
     port(
@@ -134,7 +135,7 @@ architecture reg of MPU is
                         (signed(A(223 downto 208)) * signed(B(127 downto 112))) +
                         (signed(A(207 downto 192)) * signed(B(63 downto 48)))
                     );
-                C(255 downto 240) <=temp_sum00(31 downto 16);
+                C(255 downto 240) <=temp_sum00(15 downto 0);
                 --############################################################################00              
                 temp_sum01:=
                 std_logic_vector
@@ -144,7 +145,7 @@ architecture reg of MPU is
                         (signed(A(223 downto 208)) * signed(B(111 downto 96))) +
                         (signed(A(207 downto 192)) * signed(B(47 downto 32)))
                     );
-                C(239 downto 224) <=temp_sum01(31 downto 16);
+                C(239 downto 224) <=temp_sum01(15 downto 0);
                 --############################################################################01
                 temp_sum02:=
                 std_logic_vector
@@ -152,9 +153,9 @@ architecture reg of MPU is
                         (signed(A(255 downto 240)) * signed(B(223 downto 208))) +
                         (signed(A(239 downto 224)) * signed(B(159 downto 144))) +
                         (signed(A(223 downto 208)) * signed(B(95  downto 80))) +
-                        (signed(A(207 downto 192)) * signed(B(31 downto 16)))
+                        (signed(A(207 downto 192)) * signed(B(15 downto 0)))
                     );
-                C(223 downto 208) <=temp_sum02(31 downto 16);
+                C(223 downto 208) <=temp_sum02(15 downto 0);
                 --############################################################################02
                 temp_sum03:=
                 std_logic_vector
@@ -164,7 +165,7 @@ architecture reg of MPU is
                         (signed(A(223 downto 208)) * signed(B(79 downto 64))) +
                         (signed(A(207 downto 192)) * signed(B(15 downto 0)))
                     );
-                C(207 downto 192) <=temp_sum03(31 downto 16);
+                C(207 downto 192) <=temp_sum03(15 downto 0);
                 --############################################################################03
                 temp_sum10:=
                 std_logic_vector
@@ -174,7 +175,7 @@ architecture reg of MPU is
                         (signed(A(159 downto 144)) * signed(B(127 downto 112))) +
                         (signed(A(143 downto 128)) * signed(B(63 downto 48)))
                     );
-                C(191 downto 176) <=temp_sum10(31 downto 16);
+                C(191 downto 176) <=temp_sum10(15 downto 0);
                 
                 temp_sum11:=
                 std_logic_vector
@@ -184,7 +185,7 @@ architecture reg of MPU is
                     (signed(A(159 downto 144)) * signed(B(111 downto 96))) +
                     (signed(A(143 downto 128)) * signed(B(47 downto 32)))
                 );
-                C(175 downto 160) <=temp_sum11(31 downto 16);
+                C(175 downto 160) <=temp_sum11(15 downto 0);
 
                 temp_sum12:=
                 std_logic_vector
@@ -192,9 +193,9 @@ architecture reg of MPU is
                     (signed(A(191 downto 176)) * signed(B(223 downto 208))) +           
                     (signed(A(175 downto 160)) * signed(B(159 downto 144))) +
                     (signed(A(159 downto 144)) * signed(B(95  downto 80))) +
-                    (signed(A(143 downto 128)) * signed(B(31 downto 16)))
+                    (signed(A(143 downto 128)) * signed(B(15 downto 0)))
                 );
-                C(159 downto 144) <=temp_sum12(31 downto 16);
+                C(159 downto 144) <=temp_sum12(15 downto 0);
 
                 temp_sum13:=
                 std_logic_vector
@@ -204,7 +205,7 @@ architecture reg of MPU is
                     (signed(A(159 downto 144)) * signed(B(79 downto 64))) +
                     (signed(A(143 downto 128)) * signed(B(15 downto 0)))
                 );
-                C(143 downto 128) <=temp_sum13(31 downto 16);
+                C(143 downto 128) <=temp_sum13(15 downto 0);
 
                 temp_sum20:=
                 std_logic_vector
@@ -214,7 +215,7 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
                     (signed(A(79 downto 64))   * signed(B(63 downto 48)))
                 );
-                C(127 downto 112) <=temp_sum20(31 downto 16);
+                C(127 downto 112) <=temp_sum20(15 downto 0);
 
                 temp_sum21:=
                 std_logic_vector
@@ -224,7 +225,7 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
                     (signed(A(79 downto 64))   * signed(B(47 downto 32)))
                 );
-                C(111 downto 96) <=temp_sum21(31 downto 16);
+                C(111 downto 96) <=temp_sum21(15 downto 0);
 
                 temp_sum22:=
                 std_logic_vector
@@ -232,9 +233,9 @@ architecture reg of MPU is
                     (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
                     (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
                     (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
-                    (signed(A(79 downto 64))   * signed(B(31 downto 16)))
+                    (signed(A(79 downto 64))   * signed(B(15 downto 0)))
                 );
-                C(95  downto 80) <=temp_sum22(31 downto 16);
+                C(95  downto 80) <=temp_sum22(15 downto 0);
 
                 temp_sum23:=
                 std_logic_vector
@@ -244,7 +245,7 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
                     (signed(A(79 downto 64))   * signed(B(15 downto 0)))
                 );
-                C(79 downto 64) <=temp_sum23(31 downto 16);
+                C(79 downto 64) <=temp_sum23(15 downto 0);
 
                 temp_sum30:=
                 std_logic_vector
@@ -254,7 +255,7 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
                     (signed(A(79 downto 64))   * signed(B(63 downto 48)))
                 );
-                C(63 downto 48) <=temp_sum30(31 downto 16);
+                C(63 downto 48) <=temp_sum30(15 downto 0);
 
                 temp_sum31:=
                 std_logic_vector
@@ -264,7 +265,7 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
                     (signed(A(79 downto 64))   * signed(B(47 downto 32)))
                 );
-                C(47 downto 32) <=temp_sum31(31 downto 16);
+                C(47 downto 32) <=temp_sum31(15 downto 0);
 
                 temp_sum32:=
                 std_logic_vector
@@ -272,9 +273,9 @@ architecture reg of MPU is
                     (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
                     (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
                     (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
-                    (signed(A(79 downto 64))   * signed(B(31 downto 16)))
+                    (signed(A(79 downto 64))   * signed(B(15 downto 0)))
                 );
-                C(31 downto 16) <=temp_sum32(31 downto 16);
+                C(31 downto 16) <=temp_sum32(15 downto 0);
 
                 temp_sum33:=
                 std_logic_vector
@@ -284,9 +285,218 @@ architecture reg of MPU is
                     (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
                     (signed(A(79 downto 64))   * signed(B(15 downto 0)))
                 );
-                C(15 downto 0) <=temp_sum33(31 downto 16);
+                C(15 downto 0) <=temp_sum33(15 downto 0);
     end MUL;
 
+    procedure MAC (
+        signal A 	:   in  std_logic_vector(255 downto 0);
+        signal B 	:   in  std_logic_vector(255 downto 0);
+        signal C 	:   out std_logic_vector(255 downto 0)
+       ) is
+        
+                variable temp_sum00 : std_logic_vector(31 downto 0);
+                variable temp_sum01 : std_logic_vector(31 downto 0);
+                variable temp_sum02 : std_logic_vector(31 downto 0);
+                variable temp_sum03 : std_logic_vector(31 downto 0);
+                variable temp_sum10 : std_logic_vector(31 downto 0);
+                variable temp_sum11: std_logic_vector(31 downto 0);
+                variable temp_sum12 : std_logic_vector(31 downto 0);
+                variable temp_sum13 : std_logic_vector(31 downto 0);
+                variable temp_sum20: std_logic_vector(31 downto 0);
+                variable temp_sum21: std_logic_vector(31 downto 0);
+                variable temp_sum22 : std_logic_vector(31 downto 0);
+                variable temp_sum23 : std_logic_vector(31 downto 0);
+                variable temp_sum30: std_logic_vector(31 downto 0);
+                variable temp_sum31 : std_logic_vector(31 downto 0);
+                variable temp_sum32 : std_logic_vector(31 downto 0);
+                variable temp_sum33 : std_logic_vector(31 downto 0);
+                Variable TEMP_MAT   : std_logic_vector(255 downto 0);
+                Variable TEMP_MAT2   : std_logic_vector(255 downto 0);
+                begin
+                temp_sum00:=
+                    std_logic_vector
+                        (
+                            (signed(A(255 downto 240)) * signed(B(255 downto 240))) +
+                            (signed(A(239 downto 224)) * signed(B(191 downto 176))) +
+                            (signed(A(223 downto 208)) * signed(B(127 downto 112))) +
+                            (signed(A(207 downto 192)) * signed(B(63 downto 48)))
+                        );
+                    TEMP_MAT(255 downto 240) :=temp_sum00(15 downto 0);
+                    --############################################################################00              
+                    temp_sum01:=
+                    std_logic_vector
+                        (
+                            (signed(A(255 downto 240)) * signed(B(239 downto 224))) +
+                            (signed(A(239 downto 224)) * signed(B(175 downto 160))) +
+                            (signed(A(223 downto 208)) * signed(B(111 downto 96))) +
+                            (signed(A(207 downto 192)) * signed(B(47 downto 32)))
+                        );
+                    TEMP_MAT(239 downto 224) :=temp_sum01(15 downto 0);
+                    --############################################################################01
+                    temp_sum02:=
+                    std_logic_vector
+                        (
+                            (signed(A(255 downto 240)) * signed(B(223 downto 208))) +
+                            (signed(A(239 downto 224)) * signed(B(159 downto 144))) +
+                            (signed(A(223 downto 208)) * signed(B(95  downto 80))) +
+                            (signed(A(207 downto 192)) * signed(B(15 downto 0)))
+                        );
+                    TEMP_MAT(223 downto 208) :=temp_sum02(15 downto 0);
+                    --############################################################################02
+                    temp_sum03:=
+                    std_logic_vector
+                        (
+                            (signed(A(255 downto 240)) * signed(B(207 downto 192))) +
+                            (signed(A(239 downto 224)) * signed(B(143 downto 128))) +
+                            (signed(A(223 downto 208)) * signed(B(79 downto 64))) +
+                            (signed(A(207 downto 192)) * signed(B(15 downto 0)))
+                        );
+                    TEMP_MAT(207 downto 192) :=temp_sum03(15 downto 0);
+                    --############################################################################03
+                    temp_sum10:=
+                    std_logic_vector
+                        (
+                            (signed(A(191 downto 176)) * signed(B(255 downto 240))) +
+                            (signed(A(175 downto 160)) * signed(B(191 downto 176))) +
+                            (signed(A(159 downto 144)) * signed(B(127 downto 112))) +
+                            (signed(A(143 downto 128)) * signed(B(63 downto 48)))
+                        );
+                    TEMP_MAT(191 downto 176) :=temp_sum10(15 downto 0);
+                    
+                    temp_sum11:=
+                    std_logic_vector
+                    (
+                        (signed(A(191 downto 176)) * signed(B(239 downto 224))) +
+                        (signed(A(175 downto 160)) * signed(B(175 downto 160))) +
+                        (signed(A(159 downto 144)) * signed(B(111 downto 96))) +
+                        (signed(A(143 downto 128)) * signed(B(47 downto 32)))
+                    );
+                    TEMP_MAT(175 downto 160) :=temp_sum11(15 downto 0);
+    
+                    temp_sum12:=
+                    std_logic_vector
+                    (
+                        (signed(A(191 downto 176)) * signed(B(223 downto 208))) +           
+                        (signed(A(175 downto 160)) * signed(B(159 downto 144))) +
+                        (signed(A(159 downto 144)) * signed(B(95  downto 80))) +
+                        (signed(A(143 downto 128)) * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(159 downto 144) :=temp_sum12(15 downto 0);
+    
+                    temp_sum13:=
+                    std_logic_vector
+                    (
+                        (signed(A(191 downto 176)) * signed(B(207 downto 192))) +
+                        (signed(A(175 downto 160)) * signed(B(143 downto 128))) +
+                        (signed(A(159 downto 144)) * signed(B(79 downto 64))) +
+                        (signed(A(143 downto 128)) * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(143 downto 128) :=temp_sum13(15 downto 0);
+    
+                    temp_sum20:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
+                        (signed(A(111 downto 96))  * signed(B(191 downto 176))) +
+                        (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
+                        (signed(A(79 downto 64))   * signed(B(63 downto 48)))
+                    );
+                    TEMP_MAT(127 downto 112) :=temp_sum20(15 downto 0);
+    
+                    temp_sum21:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
+                        (signed(A(111 downto 96))  * signed(B(175 downto 160))) +
+                        (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
+                        (signed(A(79 downto 64))   * signed(B(47 downto 32)))
+                    );
+                    TEMP_MAT(111 downto 96) :=temp_sum21(15 downto 0);
+    
+                    temp_sum22:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
+                        (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
+                        (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
+                        (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(95  downto 80) :=temp_sum22(15 downto 0);
+    
+                    temp_sum23:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
+                        (signed(A(111 downto 96))  * signed(B(143 downto 128))) +
+                        (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
+                        (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(79 downto 64) :=temp_sum23(15 downto 0);
+    
+                    temp_sum30:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(255 downto 240))) +
+                        (signed(A(111 downto 96))  * signed(B(191 downto 176))) +
+                        (signed(A(95  downto 80))  * signed(B(127 downto 112))) +
+                        (signed(A(79 downto 64))   * signed(B(63 downto 48)))
+                    );
+                    TEMP_MAT(63 downto 48) :=temp_sum30(15 downto 0);
+    
+                    temp_sum31:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(239 downto 224))) +
+                        (signed(A(111 downto 96))  * signed(B(175 downto 160))) +
+                        (signed(A(95  downto 80))  * signed(B(111 downto 96))) +
+                        (signed(A(79 downto 64))   * signed(B(47 downto 32)))
+                    );
+                    TEMP_MAT(47 downto 32) :=temp_sum31(15 downto 0);
+    
+                    temp_sum32:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(223 downto 208))) +
+                        (signed(A(111 downto 96))  * signed(B(159 downto 144))) +
+                        (signed(A(95  downto 80))  * signed(B(95  downto 80))) +
+                        (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(31 downto 16) :=temp_sum32(15 downto 0);
+    
+                    temp_sum33:=
+                    std_logic_vector
+                    (
+                        (signed(A(127 downto 112)) * signed(B(207 downto 192))) +
+                        (signed(A(111 downto 96))  * signed(B(143 downto 128))) +
+                        (signed(A(95  downto 80))  * signed(B(79 downto 64))) +
+                        (signed(A(79 downto 64))   * signed(B(15 downto 0)))
+                    );
+                    TEMP_MAT(15 downto 0) :=temp_sum33(15 downto 0);
+
+
+                    report "TEMP_MAT: " & to_string(TEMP_MAT);
+                    report "C: " & to_string(C);
+
+                
+
+                C(255 downto 240) <= std_logic_vector(signed(C(255 downto 240)) + signed(TEMP_MAT(255 downto 240)));
+                C(239 downto 224) <= std_logic_vector(signed(C(239 downto 224)) + signed(TEMP_MAT(239 downto 224)));
+                C(223 downto 208) <= std_logic_vector(signed(C(223 downto 208)) + signed(TEMP_MAT(223 downto 208)));
+                C(207 downto 192) <= std_logic_vector(signed(C(207 downto 192)) + signed(TEMP_MAT(207 downto 192)));
+                C(191 downto 176) <= std_logic_vector(signed(C(191 downto 176)) + signed(TEMP_MAT(191 downto 176)));
+                C(175 downto 160) <= std_logic_vector(signed(C(175 downto 160)) + signed(TEMP_MAT(175 downto 160)));
+                C(159 downto 144) <= std_logic_vector(signed(C(159 downto 144)) + signed(TEMP_MAT(159 downto 144)));
+                C(143 downto 128) <= std_logic_vector(signed(C(143 downto 128)) + signed(TEMP_MAT(143 downto 128)));
+                C(127 downto 112) <= std_logic_vector(signed(C(127 downto 112)) + signed(TEMP_MAT(127 downto 112)));
+                C(111 downto 96)  <= std_logic_vector(signed(C(111 downto 96)) + signed(TEMP_MAT(111 downto 96)));
+                C(95  downto 80)  <= std_logic_vector(signed(C(95  downto 80)) + signed(TEMP_MAT(95  downto 80)));
+                C(79  downto 64)  <= std_logic_vector(signed(C(79  downto 64)) + signed(TEMP_MAT(79  downto 64)));
+                C(63  downto 48)  <= std_logic_vector(signed(C(63  downto 48)) + signed(TEMP_MAT(63  downto 48)));
+                C(47  downto 32)  <= std_logic_vector(signed(C(47  downto 32)) + signed(TEMP_MAT(47  downto 32)));
+                C(31  downto 16)  <= std_logic_vector(signed(C(31  downto 16)) + signed(TEMP_MAT(31  downto 16)));
+                C(15  downto 0)   <= std_logic_vector(signed(C(15  downto 0)) + signed(TEMP_MAT(15  downto 0)));
+
+        end MAC;
     procedure ID   (
                     signal MAT 	:   out  std_logic_vector(255 downto 0);
                     signal data :   in std_logic_vector(15 downto 0)
@@ -596,7 +806,7 @@ begin
 	    -- Processamento da ULA baseado no opcode
 
 
-        process(MATRIX, AUX, oe_n, ce_n, we_n, clk, rst, data, address, intr)
+        process(oe_n, ce_n, we_n, clk, rst, data, address, intr)
         begin
                 if rising_edge(clk) then
                         if rst = '1' then
@@ -606,6 +816,11 @@ begin
                         if we_n = '0' and ce_n = '1' then       --Escrita
                                 data <= (others => 'Z');
                                 WRITE(address(5 downto 0), data, MATRIX);
+                                report "A: " & to_string(MATRIX(1023 downto 768));
+                                report "B: " & to_string(MATRIX(767 downto 512));
+                                report "C: " & to_string(MATRIX(511 downto 256));
+                                report "address: " & to_string(address(5 downto 0));
+                                report "data: " & to_string(data);
                         elsif oe_n = '0' and ce_n = '1' then    --Leitura
                                 READ(address(5 downto 0), data, MATRIX);
                         elsif ce_n = '0' then                   --Operações
@@ -614,15 +829,14 @@ begin
                                 case MATRIX(15 downto 0) is  --Se a porção dos últimos 16 bits da matriz, na zona de controle, for:
 
                                         when "0000000000000000"=>--Soma de A, B e salva no C.
-                                                SOMA(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
+                                                SOMA(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256)); --ADD A, B, GUARDA C
                                                                              
                                         when "0000000000000001"=>                              
                                                 SUB(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
                                         when "0000000000000010"=>                              
-                                                MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));
+                                                MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));  --MUL A, B, GUARDA C
                                         when "0000000000000011"=>                              
-                                                MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), AUX);
-                                                SOMA(MATRIX(511 downto 256), AUX, MATRIX(511 downto 256));                   
+                                                MAC(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));                 
                                         when "0000000000000100"=>                              
                                                 case MATRIX (31 downto 16) is
                                                         when "0000000000000000"=>
@@ -637,11 +851,11 @@ begin
                                         when "0000000000000101"=>                              
                                                 case MATRIX (31 downto 16) is
                                                         when "0000000000000000"=>
-                                                                ID(MATRIX(1023 downto 768), data);
+                                                                ID(MATRIX(1023 downto 768), data);      --Fill A
                                                         when "0000000000000001"=>
-                                                                ID(MATRIX(767 downto 512), data);
+                                                                ID(MATRIX(767 downto 512), data);       --Fill B
                                                         when "0000000000000010"=>   
-                                                                ID(MATRIX(511 downto 256), data);
+                                                                ID(MATRIX(511 downto 256), data);       --Fill C
                                                         when others =>
                                                                 null;
                                                 end case;

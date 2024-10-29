@@ -35,7 +35,7 @@ architecture behavior of MPU_tb is
     signal B : std_logic_vector(255 downto 0);
     signal C : std_logic_vector(255 downto 0);
 
-    constant clk_period : time := 1 ns;
+    constant clk_period : time := 10 ns;
 
 begin
     -- Instantiate the Unit Under Test (UUT)
@@ -54,7 +54,7 @@ begin
     clk_process : process
     begin
         clk <= not(clk);
-        wait for clk_period;
+        wait for clk_period/10;
     end process;
 
 
@@ -63,27 +63,106 @@ begin
             rst <= '1';
             wait for clk_period;
             rst <= '0';
-            wait for clk_period;
+ 
+
+
             we_n <='0';
             ce_n <='1';
+            oe_n <='1';
             address <= "1111111111111111";
             data <="0000000000000100";
             wait for clk_period;
+            --BLOQUINHO DE ESCRITA-----------------------------------------------------
             we_n <='0';
             ce_n <='1';
+            oe_n <='1';
             address <= "1111111111111110";
             data <="0000000000000000";
             wait for clk_period;
-            ce_n <='0';
-            wait until intr = '1';
-            wait for clk_period;
-            rst <= '1';
             we_n <='1';
-            oe_n <='0';
-            address <="0000000000000000";
-            --data <= (others => 'Z');
+            data <="0000000000000001";
+            wait for clk_period;
+            ---------------------------------------------------------------------------
+            ce_n <='0';
             wait for clk_period;
 
+            rst <= '1';
+            wait for clk_period;
+
+            we_n <='0';
+            ce_n <='1';
+            oe_n <='1';
+
+            address <= "1111111111111110";
+
+            data <="0000000000000001";
+            wait for clk_period;
+
+            ce_n <='0';
+            wait for clk_period;
+
+            rst <= '1';
+            wait for clk_period;
+
+            ce_n <='1';
+            wait for clk_period;
+
+            we_n <='0';
+            ce_n <='1';
+            oe_n <='1';
+            address <= "1111111111111111";
+            data <="0000000000000000";
+            wait for clk_period;
+
+            ce_n <='0';
+            wait for clk_period;
+
+            rst <= '1';
+            wait for clk_period;
+
+            ce_n <='1';
+            wait for clk_period;
+
+            we_n <='0';
+            ce_n <='1';
+            oe_n <='1';
+            address <= "1111111111111111";
+            data <="0000000000000010";
+            wait for clk_period;
+            ce_n <='0';
+            wait for clk_period;
+
+            rst <= '1';
+            wait for clk_period;
+
+            ce_n <='1';
+            wait for clk_period;
+
+            we_n <='0';
+            ce_n <='1';
+            oe_n <='1';
+            address <= "1111111111111111";
+            data <="0000000000000011";
+            wait for clk_period;
+            we_n<='1';
+            wait for clk_period;
+            ce_n <='0';
+            wait for clk_period;
+
+            ce_n <='1';
+            rst <= '1';
+            wait for clk_period;
+
+
+
+
+
+
+
+
+            assert false
+            report "End of Simulation: Test completed."
+            severity failure;
 
 
             
