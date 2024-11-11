@@ -38,7 +38,8 @@ package R8 is
   -- the 15 conditional jumps are abstracted as just 3 instruction classes: jumpR, jump, jumpD
  type instruction is  
     ( add, sub, and_i, or_i, xor_i, addi, subi, ldl, ldh, ld, st, sl0, sl1, sr0, sr1,
-      notA, nop, halt, ldsp, rts, pop, push, jumpR, jump, jumpD, jsrr, jsr, jsrd);
+      notA, nop, halt, ldsp, rts, pop, push, jumpR, jump, jumpD, jsrr, jsr, jsrd, intr );
+      
   
   type microinstruction is record
      mpc:   std_logic_vector(1 downto 0);  -- PC input mux control
@@ -58,14 +59,14 @@ package R8 is
      wcv:   std_logic;                     -- C and V flags write enable
      ce,rw: std_logic;                     -- Chip enable and R_W controls
      alu:   instruction;                   -- ALU operation specification
-     intr_in,wintr: std_logic;                     -- INTR_ADDRESS WRITE ENABLE
+     wintr: std_logic;                     -- INTR_ADDRESS WRITE ENABLE
      
 
   end record;
          
   -- 16-bit register, with asynchronous reset and write enable
   component register16
-       port( ck,rst,ce:in std_logic;
+       port( ck,rst,ce,intr_in:in std_logic;
              D:in  reg16;
              Q:out reg16 );
   end component;
@@ -187,7 +188,7 @@ architecture datapath of datapath is
                 source1, source2:    out reg16 );
     end component;
 
-    signal dtintr, dtreg, dtpc, dtsp, s1, s2, outalu, pc, sp, ir, rA, rB, ralu, 
+    signal DTINTR, dtreg, dtpc, dtsp, s1, s2, outalu, pc, sp, ir, rA, rB, ralu, 
            opA, opB, addA, addB, add: reg16;
     signal cin, cout, overflow: std_logic;
 begin
@@ -213,7 +214,7 @@ begin
 
   REG_alu:  register16 port map(ck=>ck, rst=>rst, ce=>uins.walu,  d=>outalu, q=>ralu );
 
-  R_INTR:   register16 port map(ck=>ck, rst=>rst, ce=>uins.wintr,   d=>s1,   q=>rintr );
+  R_INTR:   register16 port map(ck=>ck, rst=>rst, ce=>uins.wintr,   d=>outalu,   q=>rintr );
   
   -- status flags
   process (ck, rst)
@@ -258,7 +259,7 @@ begin
   dtreg <= dataIN when uins.mreg = '1' else ralu; 
 	  -- register bank writing contents selection
 
-  dtintr <= rintr when uins.intr_in else dtpc;
+  dtintr <= rintr when intr_in ='1' else dtpc;------ATENCAO ATENÇÃO ATTENTION
       
   -- moraes 21/March - multiplexer for the output data - bug corrected
   dataOUT <=  s2 when ir(15 downto 12)="1010" else opB;    
@@ -294,7 +295,7 @@ begin
             '1' & opA(15 downto 1)             when uins.alu = sr1   else
              not opA                           when uins.alu = notA  else 
              opB + 1                           when uins.alu = rts or uins.alu=pop else  
-             RA                                when uins.alu = jump or uins.alu=jsr  or uins.alu=ldsp else      
+             RA                                when uins.alu = jump or uins.alu=jsr  or uins.alu=ldsp or uins.alu=intr else      
              add;     -- by default the ALU operation is add!!
   
     
