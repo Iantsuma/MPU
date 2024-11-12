@@ -291,7 +291,7 @@ architecture reg of MPU is
     procedure MAC (
         signal A 	:   in  std_logic_vector(255 downto 0);
         signal B 	:   in  std_logic_vector(255 downto 0);
-        signal C 	:   out std_logic_vector(255 downto 0)
+        signal C 	:   inout std_logic_vector(255 downto 0)
        ) is
         
                 variable temp_sum00 : std_logic_vector(31 downto 0);
@@ -472,29 +472,29 @@ architecture reg of MPU is
                         (signed(A(79 downto 64))   * signed(B(15 downto 0)))
                     );
                     TEMP_MAT(15 downto 0) :=temp_sum33(15 downto 0);
-
+                    TEMP_MAT2 := C;
 
 
                     report "C: " & to_string(C);
 
                 
 
-                C(255 downto 240) <= std_logic_vector(signed(C(255 downto 240)) + signed(TEMP_MAT(255 downto 240)));
-                C(239 downto 224) <= std_logic_vector(signed(C(239 downto 224)) + signed(TEMP_MAT(239 downto 224)));
-                C(223 downto 208) <= std_logic_vector(signed(C(223 downto 208)) + signed(TEMP_MAT(223 downto 208)));
-                C(207 downto 192) <= std_logic_vector(signed(C(207 downto 192)) + signed(TEMP_MAT(207 downto 192)));
-                C(191 downto 176) <= std_logic_vector(signed(C(191 downto 176)) + signed(TEMP_MAT(191 downto 176)));
-                C(175 downto 160) <= std_logic_vector(signed(C(175 downto 160)) + signed(TEMP_MAT(175 downto 160)));
-                C(159 downto 144) <= std_logic_vector(signed(C(159 downto 144)) + signed(TEMP_MAT(159 downto 144)));
-                C(143 downto 128) <= std_logic_vector(signed(C(143 downto 128)) + signed(TEMP_MAT(143 downto 128)));
-                C(127 downto 112) <= std_logic_vector(signed(C(127 downto 112)) + signed(TEMP_MAT(127 downto 112)));
-                C(111 downto 96)  <= std_logic_vector(signed(C(111 downto 96)) + signed(TEMP_MAT(111 downto 96)));
-                C(95  downto 80)  <= std_logic_vector(signed(C(95  downto 80)) + signed(TEMP_MAT(95  downto 80)));
-                C(79  downto 64)  <= std_logic_vector(signed(C(79  downto 64)) + signed(TEMP_MAT(79  downto 64)));
-                C(63  downto 48)  <= std_logic_vector(signed(C(63  downto 48)) + signed(TEMP_MAT(63  downto 48)));
-                C(47  downto 32)  <= std_logic_vector(signed(C(47  downto 32)) + signed(TEMP_MAT(47  downto 32)));
-                C(31  downto 16)  <= std_logic_vector(signed(C(31  downto 16)) + signed(TEMP_MAT(31  downto 16)));
-                C(15  downto 0)   <= std_logic_vector(signed(C(15  downto 0)) + signed(TEMP_MAT(15  downto 0)));
+                C(255 downto 240) <= std_logic_vector(signed(TEMP_MAT2(255 downto 240)) + signed(TEMP_MAT(255 downto 240)));
+                C(239 downto 224) <= std_logic_vector(signed(TEMP_MAT2(239 downto 224)) + signed(TEMP_MAT(239 downto 224)));
+                C(223 downto 208) <= std_logic_vector(signed(TEMP_MAT2(223 downto 208)) + signed(TEMP_MAT(223 downto 208)));
+                C(207 downto 192) <= std_logic_vector(signed(TEMP_MAT2(207 downto 192)) + signed(TEMP_MAT(207 downto 192)));
+                C(191 downto 176) <= std_logic_vector(signed(TEMP_MAT2(191 downto 176)) + signed(TEMP_MAT(191 downto 176)));
+                C(175 downto 160) <= std_logic_vector(signed(TEMP_MAT2(175 downto 160)) + signed(TEMP_MAT(175 downto 160)));
+                C(159 downto 144) <= std_logic_vector(signed(TEMP_MAT2(159 downto 144)) + signed(TEMP_MAT(159 downto 144)));
+                C(143 downto 128) <= std_logic_vector(signed(TEMP_MAT2(143 downto 128)) + signed(TEMP_MAT(143 downto 128)));
+                C(127 downto 112) <= std_logic_vector(signed(TEMP_MAT2(127 downto 112)) + signed(TEMP_MAT(127 downto 112)));
+                C(111 downto 96)  <= std_logic_vector(signed(TEMP_MAT2(111 downto 96)) + signed(TEMP_MAT(111 downto 96)));
+                C(95  downto 80)  <= std_logic_vector(signed(TEMP_MAT2(95  downto 80)) + signed(TEMP_MAT(95  downto 80)));
+                C(79  downto 64)  <= std_logic_vector(signed(TEMP_MAT2(79  downto 64)) + signed(TEMP_MAT(79  downto 64)));
+                C(63  downto 48)  <= std_logic_vector(signed(TEMP_MAT2(63  downto 48)) + signed(TEMP_MAT(63  downto 48)));
+                C(47  downto 32)  <= std_logic_vector(signed(TEMP_MAT2(47  downto 32)) + signed(TEMP_MAT(47  downto 32)));
+                C(31  downto 16)  <= std_logic_vector(signed(TEMP_MAT2(31  downto 16)) + signed(TEMP_MAT(31  downto 16)));
+                C(15  downto 0)   <= std_logic_vector(signed(TEMP_MAT2(15  downto 0)) + signed(TEMP_MAT(15  downto 0)));
 
         end MAC;
     procedure ID   (
@@ -816,11 +816,11 @@ begin
                         if we_n = '0' and ce_n = '1' then       --Escrita
                                 data <= (others => 'Z');
                                 WRITE(address(5 downto 0), data, MATRIX);
-                                report "A: " & to_string(MATRIX(1023 downto 768));
-                                report "B: " & to_string(MATRIX(767 downto 512));
-                                report "C: " & to_string(MATRIX(511 downto 256));
-                                report "address: " & to_string(address(5 downto 0));
-                                report "data: " & to_string(data);
+                              report "A: " & to_string(MATRIX(1023 downto 768));
+                              report "B: " & to_string(MATRIX(767 downto 512));
+                              report "C: " & to_string(MATRIX(511 downto 256));
+                              report "address: " & to_string(address(5 downto 0));
+                              report "data: " & to_string(data);
                         elsif oe_n = '0' and ce_n = '1' then    --Leitura
                                 READ(address(5 downto 0), data, MATRIX);
                         elsif ce_n = '0' then                   --Operações
@@ -837,25 +837,25 @@ begin
                                                 MUL(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));  --MUL A, B, GUARDA C
                                         when "0000000000000011"=>                              
                                                 MAC(MATRIX(1023 downto 768), MATRIX(767 downto 512), MATRIX(511 downto 256));                 
-                                        when "0000000000000100"=>                              
+                                        when "0000000000000100"=>                                                              --Fill
                                                 case MATRIX (31 downto 16) is
                                                         when "0000000000000000"=>
-                                                                FILL(MATRIX(1023 downto 768), data);
+                                                                FILL(MATRIX(1023 downto 768), data);                            --A
                                                         when "0000000000000001"=>
-                                                                FILL(MATRIX(767 downto 512), data);
+                                                                FILL(MATRIX(767 downto 512), data);                             --B
                                                         when "0000000000000010"=>   
-                                                                FILL(MATRIX(511 downto 256), data);
+                                                                FILL(MATRIX(511 downto 256), data);                             --C
                                                         when others =>
                                                                 null;
                                                 end case;
                                         when "0000000000000101"=>                              
                                                 case MATRIX (31 downto 16) is
                                                         when "0000000000000000"=>
-                                                                ID(MATRIX(1023 downto 768), data);      --Fill A
+                                                                ID(MATRIX(1023 downto 768), data);      --ID A
                                                         when "0000000000000001"=>
-                                                                ID(MATRIX(767 downto 512), data);       --Fill B
+                                                                ID(MATRIX(767 downto 512), data);       --ID B
                                                         when "0000000000000010"=>   
-                                                                ID(MATRIX(511 downto 256), data);       --Fill C
+                                                                ID(MATRIX(511 downto 256), data);       --ID C
                                                         when others =>
                                                                 null;
                                                 end case;
