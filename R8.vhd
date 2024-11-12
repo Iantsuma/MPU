@@ -202,7 +202,7 @@ begin
   REGS: reg_bank port map( ck=>ck, rst=>rst, wreg=>uins.wreg, rs2=>uins.ms2,
                          ir=>ir, inREG=> dtreg, source1=>s1, source2=>s2);
 
-  RPC:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wpc,   d=>dtpc,   q=>pc );
+  RPC:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wpc,   d=>dtintr,   q=>pc );
                                                                                            
   RSP:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wsp,   d=>dtsp,   q=>sp );
 
@@ -320,7 +320,7 @@ end control_unit;
 architecture control_unit of control_unit is
 
   type type_state  is (Sidle, Sfetch, Srreg, Shalt, Salu,
-  Srts, Spop, Sldsp, Sld, Sst, Swbk, Sjmp, Ssbrt, Spush, Sintr);
+  Srts, Spop, Sldsp, Sld, Sst, Swbk, Sjmp, Ssbrt, Spush, Sintr, SINTERRUPTION);
   -- 13 states
   signal EA, PE :  type_state;
 
@@ -399,11 +399,11 @@ begin
               "00" when EA=Srts  else
               "01";                     -- alu mux
 
-  uins.msp <= '1' when  i=jsrr or i=jsr or i=jsrd or i=push else  '0';
+  uins.msp <= '1' when  i=jsrr or i=jsr or i=jsrd or i=push or EA=SINTERRUPTION else  '0';
   -- the SP register employs post-decrement for push / pre-increment for pop
               
 
-  uins.mad <= "10" when EA=Spush or  EA=Ssbrt else  -- in a subroutine mem is addressed by SP
+  uins.mad <= "10" when EA=Spush or  EA=Ssbrt or EA=SINTERRUPTION else  -- in a subroutine mem is addressed by SP
               "01" when EA=Sfetch else              -- in an instruction fetch mem is addressed by the PC
               "00";                                 -- default used is for LD/ST instructions
 
@@ -428,8 +428,8 @@ begin
   -- BLOCK (3/3) -  CONTROL FSM - generates the write enable and RAM access commands
   --------------------------------------------------------------------------------------------- 
   
-  uins.wpc  <= '1' when EA=Sfetch or EA=Sjmp  or EA=Ssbrt or EA=Srts               else '0';
-  uins.wsp  <= '1' when EA=Sldsp  or EA=Srts   or EA=Ssbrt or EA=Spush or EA=Spop  else '0';
+  uins.wpc  <= '1' when EA=Sfetch or EA=Sjmp  or EA=Ssbrt or EA=Srts or EA=SINTERRUPTION               else '0';
+  uins.wsp  <= '1' when EA=Sldsp  or EA=Srts   or EA=Ssbrt or EA=Spush or EA=Spop or EA=SINTERRUPTION  else '0';
   uins.wir  <= '1' when EA=Sfetch                                                  else '0';
   uins.wab  <= '1' when EA=Srreg                                                   else '0';
   uins.walu <= '1' when EA=Salu                                                    else '0';
@@ -438,7 +438,7 @@ begin
   uins.wcv  <= '1' when EA=Salu and (i=add or i=addi or i=sub or i=subi)           else '0';
   uins.wintr <= '1' when EA=Sintr                                                  else '0';
       ---  IMPORTANT !!!!!!!!!!!!!
-  uins.ce<='1' when rst='0' and (EA=Sfetch or EA=Srts or EA=Spop or EA=Sld or EA=Ssbrt or EA=Spush or EA=Sst) else '0';
+  uins.ce<='1' when rst='0' and (EA=Sfetch or EA=Srts or EA=Spop or EA=Sld or EA=Ssbrt or EA=SINTERRUPTION or EA=Spush or EA=Sst) else '0';
   uins.rw<='1' when EA=Sfetch or EA=Srts or EA=Spop or EA=Sld else '0';
   
   process(rst, ck)
@@ -479,7 +479,9 @@ begin
      --
      -- third clock cycle of every instruction - there are 9 distinct destinations from here
      --
-     when Salu => if i=pop                                 then   PE <= Spop;
+     when Salu => 
+                    if    intr_in = '1'                    then   PE <= SINTERRUPTION;
+                    elsif i=pop                            then   PE <= Spop;
                     elsif i=rts                            then   PE <= Srts;
                     elsif i=ldsp                           then   PE <= Sldsp;
                     elsif i=ld                             then   PE <= Sld;
@@ -495,7 +497,7 @@ begin
      --
      -- fourth clock cycle of every instruction - GO BACK TO FETCH
      -- 
-     when Spop | Srts | Sldsp | Sld | Sst | Swbk | Sjmp | Ssbrt | Spush | Sintr =>  PE <= Sfetch;
+     when Spop | Srts | Sldsp | Sld | Sst | Swbk | Sjmp | Ssbrt | Spush | Sintr | SINTERRUPTION =>  PE <= Sfetch;
   
    end case;
 

@@ -38,7 +38,8 @@ package R8 is
   -- the 15 conditional jumps are abstracted as just 3 instruction classes: jumpR, jump, jumpD
  type instruction is  
     ( add, sub, and_i, or_i, xor_i, addi, subi, ldl, ldh, ld, st, sl0, sl1, sr0, sr1,
-      notA, nop, halt, ldsp, rts, pop, push, jumpR, jump, jumpD, jsrr, jsr, jsrd);
+      notA, nop, halt, ldsp, rts, pop, push, jumpR, jump, jumpD, jsrr, jsr, jsrd, intr );
+      
   
   type microinstruction is record
      mpc:   std_logic_vector(1 downto 0);  -- PC input mux control
@@ -58,6 +59,9 @@ package R8 is
      wcv:   std_logic;                     -- C and V flags write enable
      ce,rw: std_logic;                     -- Chip enable and R_W controls
      alu:   instruction;                   -- ALU operation specification
+     wintr: std_logic;                     -- INTR_ADDRESS WRITE ENABLE
+     
+
   end record;
          
   -- 16-bit register, with asynchronous reset and write enable
@@ -169,7 +173,7 @@ use work.R8.all;
    
 entity datapath is
       port( uins: in microinstruction;
-            ck, rst: in std_logic;
+            ck, rst, intr_in: in std_logic;
             instruction, address : out reg16;
             dataIN:  in  reg16;
             dataOUT: out reg16;
@@ -184,7 +188,7 @@ architecture datapath of datapath is
                 source1, source2:    out reg16 );
     end component;
 
-    signal dtreg, dtpc, dtsp, s1, s2, outalu, pc, sp, ir, rA, rB, ralu, 
+    signal DTINTR, dtreg, dtpc, dtsp, s1, s2, outalu, pc, sp, ir, rA, rB, ralu, rintr, 
            opA, opB, addA, addB, add: reg16;
     signal cin, cout, overflow: std_logic;
 begin
@@ -198,7 +202,7 @@ begin
   REGS: reg_bank port map( ck=>ck, rst=>rst, wreg=>uins.wreg, rs2=>uins.ms2,
                          ir=>ir, inREG=> dtreg, source1=>s1, source2=>s2);
 
-  RPC:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wpc,   d=>dtpc,   q=>pc );
+  RPC:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wpc,   d=>dtintr,   q=>pc );
                                                                                            
   RSP:      register16 port map(ck=>ck, rst=>rst, ce=>uins.wsp,   d=>dtsp,   q=>sp );
 
@@ -209,6 +213,8 @@ begin
   REG_B:    register16 port map(ck=>ck, rst=>rst, ce=>uins.wab,   d=>s2,     q=>rB );
 
   REG_alu:  register16 port map(ck=>ck, rst=>rst, ce=>uins.walu,  d=>outalu, q=>ralu );
+
+  R_INTR:   register16 port map(ck=>ck, rst=>rst, ce=>uins.wintr,   d=>outalu,   q=>rintr );
   
   -- status flags
   process (ck, rst)
@@ -252,9 +258,13 @@ begin
 
   dtreg <= dataIN when uins.mreg = '1' else ralu; 
 	  -- register bank writing contents selection
+
+  dtintr <= rintr when intr_in ='1' else dtpc;------ATENCAO ATENÇÃO ATTENTION
       
   -- moraes 21/March - multiplexer for the output data - bug corrected
   dataOUT <=  s2 when ir(15 downto 12)="1010" else opB;    
+
+  --=========================================================================================================================================================
   
   ---
   ---  ALU - operation depend only on the current instruction 
@@ -285,7 +295,7 @@ begin
             '1' & opA(15 downto 1)             when uins.alu = sr1   else
              not opA                           when uins.alu = notA  else 
              opB + 1                           when uins.alu = rts or uins.alu=pop else  
-             RA                                when uins.alu = jump or uins.alu=jsr  or uins.alu=ldsp else      
+             RA                                when uins.alu = jump or uins.alu=jsr  or uins.alu=ldsp or uins.alu=intr else      
              add;     -- by default the ALU operation is add!!
   
     
@@ -302,7 +312,7 @@ use IEEE.Std_Logic_unsigned.all;
 use work.R8.all;
 entity control_unit is
       port (uins:    out microinstruction;
-            rst,ck: in std_logic;
+            rst,ck,intr_in: in std_logic;
             flag:   in reg4;
             ir:     in reg16 );
 end control_unit;
@@ -310,7 +320,7 @@ end control_unit;
 architecture control_unit of control_unit is
 
   type type_state  is (Sidle, Sfetch, Srreg, Shalt, Salu,
-  Srts, Spop, Sldsp, Sld, Sst, Swbk, Sjmp, Ssbrt, Spush);
+  Srts, Spop, Sldsp, Sld, Sst, Swbk, Sjmp, Ssbrt, Spush, Sintr, SINTERRUPTION);
   -- 13 states
   signal EA, PE :  type_state;
 
@@ -347,7 +357,8 @@ begin
        ldsp  when ir(15 downto 12)=11 and ir(3 downto 0)=7  else
        rts   when ir(15 downto 12)=11 and ir(3 downto 0)=8  else
        pop   when ir(15 downto 12)=11 and ir(3 downto 0)=9  else
-       push  when ir(15 downto 12)=11 and ir(3 downto 0)=10 else 
+       push  when ir(15 downto 12)=11 and ir(3 downto 0)=10 else
+       intr  when ir(15 downto 12)=11 and ir(3 downto 0)=11 else
                
        -- jump instructions ** It is here that the status flags are tested to jump or not to jump *************
 
@@ -388,11 +399,11 @@ begin
               "00" when EA=Srts  else
               "01";                     -- alu mux
 
-  uins.msp <= '1' when  i=jsrr or i=jsr or i=jsrd or i=push else  '0';
+  uins.msp <= '1' when  i=jsrr or i=jsr or i=jsrd or i=push or EA=SINTERRUPTION else  '0';
   -- the SP register employs post-decrement for push / pre-increment for pop
               
 
-  uins.mad <= "10" when EA=Spush or  EA=Ssbrt else  -- in a subroutine mem is addressed by SP
+  uins.mad <= "10" when EA=Spush or  EA=Ssbrt or EA=SINTERRUPTION else  -- in a subroutine mem is addressed by SP
               "01" when EA=Sfetch else              -- in an instruction fetch mem is addressed by the PC
               "00";                                 -- default used is for LD/ST instructions
 
@@ -411,23 +422,23 @@ begin
   uins.mb <= "01"  when  i=rts or i=pop   else      -- to increment the SP register
              "10"  when  i=jumpR or i=jump or i=jumpD or i=jsrr or i=jsr or i=jsrd  else 
              	-- in jumps and jsr instructions, the PC resgister is the ALU second operand
-             "00" ;      
+             "00" ;  
 
   ---------------------------------------------------------------------------------------------
   -- BLOCK (3/3) -  CONTROL FSM - generates the write enable and RAM access commands
   --------------------------------------------------------------------------------------------- 
   
-  uins.wpc  <= '1' when EA=Sfetch or EA=Sjmp  or EA=Ssbrt or EA=Srts               else '0';
-  uins.wsp  <= '1' when EA=Sldsp  or EA=Srts   or EA=Ssbrt or EA=Spush or EA=Spop  else '0';
+  uins.wpc  <= '1' when EA=Sfetch or EA=Sjmp  or EA=Ssbrt or EA=Srts or EA=SINTERRUPTION               else '0';
+  uins.wsp  <= '1' when EA=Sldsp  or EA=Srts   or EA=Ssbrt or EA=Spush or EA=Spop or EA=SINTERRUPTION  else '0';
   uins.wir  <= '1' when EA=Sfetch                                                  else '0';
   uins.wab  <= '1' when EA=Srreg                                                   else '0';
   uins.walu <= '1' when EA=Salu                                                    else '0';
   uins.wreg <= '1' when EA=Swbk  or EA=Sld   or EA=Spop                            else '0';
   uins.wnz  <= '1' when EA=Salu and (inst_la1='1' or  i=addi or i=subi)            else '0';
   uins.wcv  <= '1' when EA=Salu and (i=add or i=addi or i=sub or i=subi)           else '0';
-  
+  uins.wintr <= '1' when EA=Sintr                                                  else '0';
       ---  IMPORTANT !!!!!!!!!!!!!
-  uins.ce<='1' when rst='0' and (EA=Sfetch or EA=Srts or EA=Spop or EA=Sld or EA=Ssbrt or EA=Spush or EA=Sst) else '0';
+  uins.ce<='1' when rst='0' and (EA=Sfetch or EA=Srts or EA=Spop or EA=Sld or EA=Ssbrt or EA=SINTERRUPTION or EA=Spush or EA=Sst) else '0';
   uins.rw<='1' when EA=Sfetch or EA=Srts or EA=Spop or EA=Sld else '0';
   
   process(rst, ck)
@@ -468,7 +479,9 @@ begin
      --
      -- third clock cycle of every instruction - there are 9 distinct destinations from here
      --
-     when Salu => if i=pop                                 then   PE <= Spop;
+     when Salu => 
+                    if    intr_in = '1'                    then   PE <= SINTERRUPTION;
+                    elsif i=pop                            then   PE <= Spop;
                     elsif i=rts                            then   PE <= Srts;
                     elsif i=ldsp                           then   PE <= Sldsp;
                     elsif i=ld                             then   PE <= Sld;
@@ -477,13 +490,14 @@ begin
                     elsif i=jumpR or i=jump or i=jumpD     then   PE <= Sjmp;
                     elsif i=jsrr or i=jsr or i=jsrd        then   PE <= Ssbrt;
                     elsif i=push                           then   PE <= Spush;
+                    elsif i=intr                           then   PE <= Sintr;
                     else  PE <= Sfetch;   -- nop and jumps with flag=0 execute in just 3 clock cycles ** ATTENTION **
                    end if;
 
      --
      -- fourth clock cycle of every instruction - GO BACK TO FETCH
      -- 
-     when Spop | Srts | Sldsp | Sld | Sst | Swbk | Sjmp | Ssbrt | Spush =>  PE <= Sfetch;
+     when Spop | Srts | Sldsp | Sld | Sst | Swbk | Sjmp | Ssbrt | Spush | Sintr | SINTERRUPTION =>  PE <= Sfetch;
   
    end case;
 
@@ -499,7 +513,7 @@ use IEEE.Std_Logic_1164.all;
 use work.R8.all;
 
 entity processor is
-      port( ck,rst: in std_logic;
+      port( ck,rst,intr_in: in std_logic;
             dataIN:  in  reg16;
             dataOUT: out reg16;
             address: out reg16;
@@ -510,14 +524,14 @@ architecture processor of processor is
 
       component control_unit
             port( uins:   out microinstruction;
-                  ck,rst: in std_logic;
+                  ck,rst,intr_in: in std_logic;
                   flag:   in reg4;
                   ir:     in reg16 );
       end component;
 
       component datapath
             port( uins: in microinstruction;
-                  ck, rst: in std_logic;
+                  ck, rst,intr_in: in std_logic;
                   instruction, address : out reg16;
                   dataIN:  in  reg16;
                   dataOUT: out reg16;
@@ -530,10 +544,10 @@ architecture processor of processor is
 
 begin
 
-    dp: datapath   port map(uins=>uins, ck=>ck, rst=>rst,instruction=>ir,
+    dp: datapath   port map(uins=>uins, ck=>ck, rst=>rst,intr_in => intr_in,instruction=>ir,
                             address=>address,dataIN=>dataIN, dataOUT=>dataOUT, flag=>flag);
 
-    ctrl: control_unit port map(uins=>uins, ck=>ck, rst=>rst, flag=>flag, ir=>ir);
+    ctrl: control_unit port map(uins=>uins, ck=>ck, rst=>rst, intr_in => intr_in, flag=>flag, ir=>ir);
 
     ce <= uins.ce;
     rw <= uins.rw;

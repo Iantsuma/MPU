@@ -1,5 +1,5 @@
 Analysis & Elaboration report for R8
-Tue Oct 08 13:31:24 2024
+Mon Nov 11 23:06:32 2024
 Quartus Prime Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
 
 
@@ -37,10 +37,10 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Elaboration Summary                                                   ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Elaboration Status      ; Successful - Tue Oct 08 13:31:24 2024       ;
+; Analysis & Elaboration Status      ; Failed - Mon Nov 11 23:06:32 2024           ;
 ; Quartus Prime Version              ; 20.1.0 Build 711 06/05/2020 SJ Lite Edition ;
 ; Revision Name                      ; R8                                          ;
-; Top-level Entity Name              ; processor                                   ;
+; Top-level Entity Name              ; R8                                          ;
 ; Family                             ; Cyclone IV E                                ;
 ; Total logic elements               ; N/A until Partition Merge                   ;
 ;     Total combinational functions  ; N/A until Partition Merge                   ;
@@ -59,8 +59,8 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------+-------------+
 ; Processors                 ; Number      ;
 +----------------------------+-------------+
-; Number detected on machine ; 20          ;
-; Maximum allowed            ; 14          ;
+; Number detected on machine ; 12          ;
+; Maximum allowed            ; 6           ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
 ; Maximum used               ; 1           ;
@@ -76,7 +76,7 @@ https://fpgasoftware.intel.com/eula.
 ; Option                                                           ; Setting            ; Default Value      ;
 +------------------------------------------------------------------+--------------------+--------------------+
 ; Device                                                           ; EP4CE115F29C7      ;                    ;
-; Top-level entity name                                            ; processor          ; R8                 ;
+; Top-level entity name                                            ; R8                 ; R8                 ;
 ; Family name                                                      ; Cyclone IV E       ; Cyclone V          ;
 ; Use smart compilation                                            ; Off                ; Off                ;
 ; Enable parallel Assembler and Timing Analyzer during compilation ; On                 ; On                 ;
@@ -162,34 +162,29 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Elaboration
     Info: Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
-    Info: Processing started: Tue Oct 08 13:31:00 2024
+    Info: Processing started: Mon Nov 11 23:06:23 2024
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off R8 -c R8 --analysis_and_elaboration
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
-Info (20030): Parallel compilation is enabled and will use 14 of the 14 processors detected
+Info (20030): Parallel compilation is enabled and will use 6 of the 6 processors detected
 Info (12021): Found 12 design units, including 5 entities, in source file r8.vhd
-    Info (12022): Found design unit 1: R8 File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 32
-    Info (12022): Found design unit 2: R8-body File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 77
-    Info (12022): Found design unit 3: register16-register16 File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 113
-    Info (12022): Found design unit 4: reg_bank-reg_bank File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 139
-    Info (12022): Found design unit 5: datapath-datapath File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 179
-    Info (12022): Found design unit 6: control_unit-control_unit File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 310
-    Info (12022): Found design unit 7: processor-processor File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 509
-    Info (12023): Found entity 1: register16 File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 107
-    Info (12023): Found entity 2: reg_bank File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 133
-    Info (12023): Found entity 3: datapath File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 170
-    Info (12023): Found entity 4: control_unit File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 303
-    Info (12023): Found entity 5: processor File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 501
-Info (12127): Elaborating entity "processor" for the top level hierarchy
-Info (12128): Elaborating entity "datapath" for hierarchy "datapath:dp" File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 533
-Info (12128): Elaborating entity "reg_bank" for hierarchy "datapath:dp|reg_bank:REGS" File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 198
-Info (12128): Elaborating entity "register16" for hierarchy "datapath:dp|reg_bank:REGS|register16:\r1:0:rx" File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 148
-Info (12128): Elaborating entity "control_unit" for hierarchy "control_unit:ctrl" File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 536
-Warning (10492): VHDL Process Statement warning at R8.vhd(476): signal "inst_la1" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 476
-Warning (10492): VHDL Process Statement warning at R8.vhd(476): signal "inst_la2" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/re_ro/OneDrive/Documentos/Arquitetura_pratica/Projeto_Final/R8_restored/R8.vhd Line: 476
-Info: Quartus Prime Analysis & Elaboration was successful. 0 errors, 3 warnings
-    Info: Peak virtual memory: 4779 megabytes
-    Info: Processing ended: Tue Oct 08 13:31:24 2024
-    Info: Elapsed time: 00:00:24
-    Info: Total CPU time (on all processors): 00:00:10
+    Info (12022): Found design unit 1: R8 File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 32
+    Info (12022): Found design unit 2: R8-body File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 81
+    Info (12022): Found design unit 3: register16-register16 File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 117
+    Info (12022): Found design unit 4: reg_bank-reg_bank File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 143
+    Info (12022): Found design unit 5: datapath-datapath File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 183
+    Info (12022): Found design unit 6: control_unit-control_unit File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 320
+    Info (12022): Found design unit 7: processor-processor File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 523
+    Info (12023): Found entity 1: register16 File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 111
+    Info (12023): Found entity 2: reg_bank File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 137
+    Info (12023): Found entity 3: datapath File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 174
+    Info (12023): Found entity 4: control_unit File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 313
+    Info (12023): Found entity 5: processor File: D:/ARQUITORTURA/MPU/R8_restored/R8.vhd Line: 515
+Warning (12019): Can't analyze file -- file MPU.vhd is missing
+Error (12007): Top-level design entity "R8" is undefined
+Error: Quartus Prime Analysis & Elaboration was unsuccessful. 1 error, 2 warnings
+    Error: Peak virtual memory: 4773 megabytes
+    Error: Processing ended: Mon Nov 11 23:06:32 2024
+    Error: Elapsed time: 00:00:09
+    Error: Total CPU time (on all processors): 00:00:19
 
 

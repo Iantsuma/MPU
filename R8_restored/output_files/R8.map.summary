@@ -1,7 +1,7 @@
-Analysis & Elaboration Status : Successful - Tue Oct 08 13:31:24 2024
+Analysis & Elaboration Status : Failed - Mon Nov 11 23:06:32 2024
 Quartus Prime Version : 20.1.0 Build 711 06/05/2020 SJ Lite Edition
 Revision Name : R8
-Top-level Entity Name : processor
+Top-level Entity Name : R8
 Family : Cyclone IV E
 Total logic elements : N/A until Partition Merge
     Total combinational functions : N/A until Partition Merge
