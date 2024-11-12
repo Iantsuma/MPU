@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.ALL;
 use work.R8.all;
-use std.textio.all;
+use ieee.std_logic_textio.all;
 
 entity MPU is
     port(
@@ -474,7 +474,7 @@ architecture reg of MPU is
                     TEMP_MAT(15 downto 0) :=temp_sum33(15 downto 0);
 
 
-                    report "TEMP_MAT: " & to_string(TEMP_MAT);
+
                     report "C: " & to_string(C);
 
                 
