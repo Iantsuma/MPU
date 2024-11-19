@@ -55,6 +55,7 @@ use IEEE.std_logic_arith.all;
 use IEEE.std_logic_unsigned.all;          
 use STD.TEXTIO.all;
 use work.R8.all;
+use work.MPU.all;
 
 entity R8_tb is
 end R8_tb;
@@ -75,9 +76,19 @@ architecture TB_ARCHITECTURE of R8_tb is
               address: in  reg16;
               data:    inout reg16 );
       end component;
+		
+		component mpu
+		port(ce_n, we_n, oe_n: in std_logic;
+				clk: in std_logic;
+				rst: in std_logic;
+				address: in std_logic_vector(15 downto 0);
+				data: inout std_logic_vector(15 downto 0)
+				);
+		end component;
         
       signal go, rw, ce, ck, rst, rstR8, ce_n, we_n, oe_n : std_logic;
       signal dataR8, data, ad, adR8, address, ins : reg16;    
+		signal ce_mpu, we_mpu, oe_mpu, clk_mpu, rst_mpu, ad_mpu, data_mpu: std_logic;
     
       file ARQ : TEXT open READ_MODE is "vectaddr8.txt";
 
@@ -88,6 +99,9 @@ architecture TB_ARCHITECTURE of R8_tb is
     
     R1 : memRAM    port map
         (ce_n=>ce_n, we_n=>we_n, oe_n=>oe_n, data=>data, address=>ad);
+		  
+	MPU : mpu port map
+	(ce_n =>ce_mpu, we_n=>we_mpu, oe_n=>oe_mpu, clk=>clk_mpu, rst=>rst_mpu, address=>ad_mpu, data=>data_mpu);
         
 
     rst <='1', '0' after 5ns;        -- generates the reset signal 
